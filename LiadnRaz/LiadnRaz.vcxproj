@@ -64,6 +64,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="valid.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="valid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
