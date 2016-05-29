@@ -49,6 +49,18 @@ bool Valid::isUsernameValid(string user)
 	bool spaceCheck = false;
 	for (int i = 0; i < user.size(); i++)
 	{
-
+		if (user[i] == ' ')
+		{
+			spaceCheck = true;
+		}
 	}
+	if (isalpha(user[0]))
+	{
+		firstLetter = true;
+	}
+	if (user.size() > 0 && spaceCheck == false && firstLetter == true)
+	{
+		userValid = true;
+	}
+	return userValid;
 }
