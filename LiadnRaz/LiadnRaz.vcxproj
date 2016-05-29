@@ -64,12 +64,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Helper.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="valid.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="checkValid.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="valid.cpp" />
   </ItemGroup>
