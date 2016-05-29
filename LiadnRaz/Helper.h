@@ -30,6 +30,7 @@ private:
 
 #ifdef _DEBUG // vs add this define in debug mode
 #include <stdio.h>
+//liad comment for checking the git
 // Q: why do we need traces ?
 // A: traces are a nice and easy way to detect bugs without even debugging
 // or to understand what happened in case we miss the bug in the first time
