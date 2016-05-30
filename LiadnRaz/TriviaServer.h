@@ -5,13 +5,20 @@
 #include <ws2tcpip.h>
 #include <queue>
 #include <vector>
+#include <thread>
+#include "Helper.h"
 #pragma comment(lib,"Ws2_32.lib")
 using namespace std;
+
+#define PORT "27015"
 
 
 class TriviaServer
 {
 private:
+	SOCKET _server;
+	WSADATA wsaData;
+	struct addrinfo *result = NULL;
 	map<SOCKET, string> _connectedUsers;//string has to change to "User*"
 	map<int, string> _roomsList;//string has to change to "Room*"
 	queue<string> _queRcvMessages;//string has to change to "RecievedMessage*"
@@ -22,7 +29,7 @@ public:
 	~TriviaServer();//delete rooms,users,sockets
 	void serv();
 	void bindAndListen();
-	void accept();
+	void tAccept();
 	void clientHandler(SOCKET client_socket);
 	Room * getRoomById(int id);
 	User * getUserByName(string username);

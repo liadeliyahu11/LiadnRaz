@@ -64,13 +64,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="sqlite3.h" />
-    <ClInclude Include="valid.h" />
+    <ClCompile Include="Helper.cpp" />
+    <ClCompile Include="sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="checkValid.cpp" />
-    <ClCompile Include="sqlite3.c" />
-    <ClCompile Include="valid.cpp" />
+    <ClInclude Include="DataBase.h" />
+    <ClInclude Include="Helper.h" />
+    <ClInclude Include="sqlite3.h" />
+    <ClInclude Include="TriviaServer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
