@@ -84,7 +84,7 @@ void TriviaServer::serv()
 		tAccept();
 	}
 }
-/*
+
 void TriviaServer::clientHandler(SOCKET client_socket)
 {
 	bool flag = true;
@@ -100,7 +100,7 @@ void TriviaServer::clientHandler(SOCKET client_socket)
 		{
 			try
 			{
-				buildRecieveMessage(client_socket, typeCode);
+				//buildRecieveMessage(client_socket, typeCode);
 			}
 			catch (...)
 			{
@@ -108,4 +108,4 @@ void TriviaServer::clientHandler(SOCKET client_socket)
 			}
 		}
 	}
-}*/
+}

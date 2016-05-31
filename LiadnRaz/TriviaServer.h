@@ -15,7 +15,7 @@
 using namespace std;
 
 
-#define PORT "27015"
+#define PORT "8820"
 
 
 class TriviaServer
