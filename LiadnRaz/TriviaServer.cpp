@@ -62,6 +62,15 @@ void TriviaServer::bindAndListen()
 	}
 }
 
+void TriviaServer::serv()
+{
+	bindAndListen();
+	while (true)
+	{
+		tAccept();
+	}
+}
+
 void TriviaServer::tAccept()
 {
 	SOCKET client_socket = accept(_server, NULL, NULL);
@@ -72,6 +81,7 @@ void TriviaServer::tAccept()
 		throw "accept error!";
 	}
 	thread c(&clientHandler);
+	cout << "thread created!"<<endl;
 }
 
 void TriviaServer::clientHandler(SOCKET client_socket)
