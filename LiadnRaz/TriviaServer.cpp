@@ -42,7 +42,7 @@ TriviaServer::~TriviaServer()
 
 void TriviaServer::bindAndListen()
 {
-	int res = bind(_server, result->ai_addr, (int)result->ai_addrlen);
+	int res = ::bind(_server, result->ai_addr, (int)result->ai_addrlen);
 	if (res == SOCKET_ERROR) {
 		printf("bind failed with error: %d\n", WSAGetLastError());
 		freeaddrinfo(result);
@@ -62,14 +62,6 @@ void TriviaServer::bindAndListen()
 	}
 }
 
-void TriviaServer::serv()
-{
-	bindAndListen();
-	while (true)
-	{
-		tAccept();
-	}
-}
 
 void TriviaServer::tAccept()
 {
@@ -80,10 +72,19 @@ void TriviaServer::tAccept()
 		WSACleanup();
 		throw "accept error!";
 	}
-	thread c(&clientHandler);
-	cout << "thread created!"<<endl;
+	thread c(&TriviaServer::clientHandler,this ,client_socket);
+	cout << "thread created!" << endl;
 }
 
+void TriviaServer::serv()
+{
+	bindAndListen();
+	while (true)
+	{
+		tAccept();
+	}
+}
+/*
 void TriviaServer::clientHandler(SOCKET client_socket)
 {
 	bool flag = true;
@@ -107,4 +108,4 @@ void TriviaServer::clientHandler(SOCKET client_socket)
 			}
 		}
 	}
-}
+}*/

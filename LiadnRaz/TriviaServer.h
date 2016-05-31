@@ -6,9 +6,14 @@
 #include <queue>
 #include <vector>
 #include <thread>
+#include "RecievedMessage.h"
 #include "Helper.h"
+#include "Room.h"
+#include "User.h"
+
 #pragma comment(lib,"Ws2_32.lib")
 using namespace std;
+
 
 #define PORT "27015"
 

@@ -1,72 +1,16 @@
-﻿Build started 5/31/2016 1:23:11 PM.
+﻿Build started 5/31/2016 2:00:50 PM.
      1>Project "C:\Users\User\Documents\GitHub\LiadnRaz\LiadnRaz\LiadnRaz.vcxproj" on node 2 (Build target(s)).
-     1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt TriviaServer.cpp main.cpp
-         main.cpp
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(34): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(34): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(34): warning C4183: 'getRoomById': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(35): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(35): warning C4183: 'getUserByName': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(36): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(36): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(36): warning C4183: 'getUserBySocket': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(38): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): warning C4183: 'handleSignin': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(40): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(41): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(42): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(43): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(44): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(45): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(46): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(47): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(48): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(49): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(50): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(51): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(52): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(53): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\main.cpp(10): error C2228: left of '.serv' must have class/struct/union
-         TriviaServer.cpp
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(34): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(34): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(34): warning C4183: 'getRoomById': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(35): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(35): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(35): warning C4183: 'getUserByName': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(36): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(36): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(36): warning C4183: 'getUserBySocket': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(38): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): error C2143: syntax error : missing ';' before '*'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(39): warning C4183: 'handleSignin': missing return type; assumed to be a member function returning 'int'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(40): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(41): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(42): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(43): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(44): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(45): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(46): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(47): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(48): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(49): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(50): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(51): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(52): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.h(53): error C2061: syntax error : identifier 'RecievedMessage'
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.cpp(45): error C2440: 'initializing' : cannot convert from 'std::_Bind<false,void,SOCKET &,sockaddr *&,int>' to 'int'
-                 No user-defined-conversion operator available that can perform this conversion, or the operator cannot be called
-     1>c:\users\user\documents\github\liadnraz\liadnraz\triviaserver.cpp(83): error C2276: '&' : illegal operation on bound member function expression
-         Generating Code...
+     1>Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.lib" /MACHINE:X86 Debug\Helper.obj
+         Debug\main.obj
+         Debug\RecievedMessage.obj
+         Debug\sqlite3.obj
+         Debug\TriviaServer.obj
+         Debug\valid.obj
+     1>TriviaServer.obj : error LNK2019: unresolved external symbol "public: void __thiscall TriviaServer::clientHandler(unsigned int)" (?clientHandler@TriviaServer@@QAEXI@Z) referenced in function "public: void __thiscall TriviaServer::tAccept(void)" (?tAccept@TriviaServer@@QAEXXZ)
+     1>C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.exe : fatal error LNK1120: 1 unresolved externals
      1>Done Building Project "C:\Users\User\Documents\GitHub\LiadnRaz\LiadnRaz\LiadnRaz.vcxproj" (Build target(s)) -- FAILED.
 
 Build FAILED.
 
-Time Elapsed 00:00:02.46
+Time Elapsed 00:00:00.32

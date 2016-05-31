@@ -66,6 +66,7 @@
   <ItemGroup>
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="RecievedMessage.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="TriviaServer.cpp" />
     <ClCompile Include="valid.cpp" />
@@ -74,8 +75,10 @@
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="RecievedMessage.h" />
+    <ClInclude Include="Room.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="TriviaServer.h" />
+    <ClInclude Include="User.h" />
     <ClInclude Include="valid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -6,8 +6,8 @@ void main()
 {
 	try
 	{
-		TriviaServer ts();
-		ts.serv();
+		TriviaServer ts;
+		//ts.serv();
 
 	}
 	catch (...)
