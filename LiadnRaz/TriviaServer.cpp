@@ -123,7 +123,6 @@ void TriviaServer::addEndConnection(SOCKET cs)
 void TriviaServer::addRecievedMessage(RecievedMessage * rm)
 {
 	_queRcvMessages.push(rm);
-	cout << rm->getCode() << " " << rm->getData()[0] << endl;
 	//cv Wake Up
 }
 
@@ -224,6 +223,11 @@ void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 }
 
 void TriviaServer::handleRecievedMessages()
+{
+
+}
+
+void TriviaServer::handleSignout(RecievedMessage * rm)
 {
 
 }
