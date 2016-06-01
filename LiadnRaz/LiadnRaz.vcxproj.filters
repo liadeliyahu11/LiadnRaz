@@ -33,7 +33,11 @@
     <ClCompile Include="RecievedMessage.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="User.cpp">
+=======
+    <ClCompile Include="DataBase.cpp">
+>>>>>>> origin/master
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
