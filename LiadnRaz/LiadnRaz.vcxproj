@@ -69,6 +69,7 @@
     <ClCompile Include="RecievedMessage.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="TriviaServer.cpp" />
+    <ClCompile Include="User.cpp" />
     <ClCompile Include="valid.cpp" />
   </ItemGroup>
   <ItemGroup>

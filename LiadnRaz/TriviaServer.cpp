@@ -73,6 +73,7 @@ void TriviaServer::tAccept()
 		throw "accept error!";
 	}
 	thread c(&TriviaServer::clientHandler,this ,client_socket);
+	c.detach();
 	cout << "thread created!" << endl;
 }
 
@@ -91,21 +92,107 @@ void TriviaServer::clientHandler(SOCKET client_socket)
 	while (flag)
 	{
 		int typeCode = Helper::getMessageTypeCode(client_socket);
+		
 		if (typeCode == 0 || typeCode == 299)
 		{
 			flag = false;
-			//create end of connection msg
+			cout << typeCode << endl;
+			addEndConnection(client_socket);
 		}
 		else
 		{
 			try
 			{
-				//buildRecieveMessage(client_socket, typeCode);
+				buildRecieveMessage(client_socket, typeCode);
+				
 			}
 			catch (...)
 			{
-				//create end of connection msg
+				addEndConnection(client_socket);
 			}
 		}
 	}
+}
+
+void TriviaServer::addEndConnection(SOCKET cs)
+{
+	RecievedMessage * rm = new RecievedMessage(299,cs);
+	addRecievedMessage(rm);
+}
+
+void TriviaServer::addRecievedMessage(RecievedMessage * rm)
+{
+	_queRcvMessages.push(rm);
+	cout << rm->getCode() << " " << rm->getData()[0] << endl;
+}
+
+void TriviaServer::buildRecieveMessage(SOCKET client_socket, int msgCode)
+{
+	vector<string> data;
+	RecievedMessage * rm = new RecievedMessage(msgCode, client_socket);
+	if (msgCode == 200 || msgCode == 203 || msgCode == 207 ||
+		msgCode == 209 || msgCode == 213 || msgCode == 219)
+	{
+		if (msgCode == 200)
+		{
+			int usernameLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
+			data[0] = Helper::getStringPartFromSocket(client_socket, usernameLength);
+			int passLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
+			data[1] = Helper::getStringPartFromSocket(client_socket, passLength);
+		}
+		else if (msgCode == 203)
+		{
+			int usernameLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
+			data.push_back( Helper::getStringPartFromSocket(client_socket, usernameLength));
+			int passLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, passLength));
+			int emailLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, emailLength));
+		}
+		else if (msgCode == 209 || msgCode == 207)
+		{
+			data.push_back(Helper::getStringPartFromSocket(client_socket, 4));
+		}
+		else if (msgCode == 213)
+		{
+			int roomNameLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, roomNameLength));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, 1));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, 2));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, 2));
+		}
+		else
+		{
+			data.push_back(Helper::getStringPartFromSocket(client_socket, 1));
+			data.push_back(Helper::getStringPartFromSocket(client_socket, 2));
+		}
+		delete rm;
+		RecievedMessage * rm = new RecievedMessage(msgCode,client_socket,data);
+	}
+	addRecievedMessage(rm);
+}
+
+Room * TriviaServer::getRoomById(int id)
+{
+	Room * res = nullptr;
+	if (_roomsList.find(id) != _roomsList.end())
+	{
+		res = _roomsList.at(id);
+	}
+	return res;
+}
+
+User * TriviaServer::getUserByName(string name)
+{
+	bool found = false;
+	User * res = nullptr;
+	for (std::map<SOCKET, User>::iterator it = _connectedUsers.begin(); it != _connectedUsers.end() && !found; ++it)
+	{
+		found = true;
+		if (it->second.getName().compare(name) == 0)
+		{
+			res = &it->second;
+		}
+	}
+	return res;
 }

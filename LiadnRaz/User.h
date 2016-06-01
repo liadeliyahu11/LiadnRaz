@@ -6,9 +6,9 @@ using namespace std;
 class User
 {
 public:
-	User();
+	User(string name);
 	~User();
-
+	string getName();
 private:
-
+	string _name;
 };

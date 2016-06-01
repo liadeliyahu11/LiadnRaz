@@ -13,6 +13,9 @@ public:
 	RecievedMessage(int typeCode,SOCKET client);
 	RecievedMessage(int typeCode, SOCKET client,vector<string> v);
 	~RecievedMessage();
+	vector<string> getData();
+	int getCode();
+	SOCKET getSocket();
 
 private:
 	vector<string> _data;

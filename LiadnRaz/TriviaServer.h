@@ -24,9 +24,9 @@ private:
 	SOCKET _server;
 	WSADATA wsaData;
 	struct addrinfo *result = NULL;
-	map<SOCKET, string> _connectedUsers;//string has to change to "User*"
-	map<int, string> _roomsList;//string has to change to "Room*"
-	queue<string> _queRcvMessages;//string has to change to "RecievedMessage*"
+	map<SOCKET, User> _connectedUsers;
+	map<int, Room*> _roomsList;
+	queue<RecievedMessage *> _queRcvMessages;
 	static int _roomIdSequence;
 
 public:
@@ -57,6 +57,7 @@ public:
 	void handleGetPersonalStatus(RecievedMessage* msg);
 	void addRecievedMessage(RecievedMessage* msg);
 	void buildRecieveMessage(SOCKET client_socket, int msgCode);
-
+	// aditional:
+	void addEndConnection(SOCKET cs);
 
 };

@@ -23,11 +23,6 @@ int Helper::getMessageTypeCode(SOCKET sc)
 
 
 
-
-
-
-
-
 // send data to socket
 // this is private function
 void Helper::sendData(SOCKET sc, std::string message)
