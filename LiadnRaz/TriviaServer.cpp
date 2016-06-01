@@ -124,6 +124,7 @@ void TriviaServer::addRecievedMessage(RecievedMessage * rm)
 {
 	_queRcvMessages.push(rm);
 	cout << rm->getCode() << " " << rm->getData()[0] << endl;
+	//cv Wake Up
 }
 
 void TriviaServer::buildRecieveMessage(SOCKET client_socket, int msgCode)
@@ -196,3 +197,35 @@ User * TriviaServer::getUserByName(string name)
 	}
 	return res;
 }
+
+
+User * TriviaServer::getUserBySocket(SOCKET cs)
+{
+	User * res = nullptr;
+	if (_connectedUsers.find(cs) != _connectedUsers.end())
+	{
+		res = &_connectedUsers.at(cs);
+	}
+	return res;
+}
+
+void TriviaServer::safeDeleteUser(RecievedMessage * msg)
+{
+	try
+	{
+
+		handleSignout(new RecievedMessage(209, msg->getSocket()));//signout
+		closesocket(msg->getSocket());
+	}
+	catch (...)
+	{
+		cout << "safeDeleteUser error!" << endl;
+	}
+}
+
+void TriviaServer::handleRecievedMessages()
+{
+
+}
+
+

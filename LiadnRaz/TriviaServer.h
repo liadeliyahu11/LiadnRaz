@@ -6,6 +6,7 @@
 #include <queue>
 #include <vector>
 #include <thread>
+#include <mutex>
 #include "RecievedMessage.h"
 #include "Helper.h"
 #include "Room.h"
@@ -28,6 +29,7 @@ private:
 	map<int, Room*> _roomsList;
 	queue<RecievedMessage *> _queRcvMessages;
 	static int _roomIdSequence;
+	mutex que_mutex;
 
 public:
 	TriviaServer();//run DB constructor
@@ -40,7 +42,7 @@ public:
 	User * getUserByName(string username);
 	User * getUserBySocket(SOCKET client_socket);
 	void handleRecievedMessages();
-	void safeDeleteUesr(RecievedMessage* msg);
+	void safeDeleteUser(RecievedMessage* msg);
 	User * handleSignin(RecievedMessage* msg);
 	void handleSignout(RecievedMessage* msg);
 	bool handleSignup(RecievedMessage* msg);
