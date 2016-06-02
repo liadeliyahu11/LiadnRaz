@@ -229,7 +229,7 @@ void TriviaServer::handleRecievedMessages()
 
 void TriviaServer::handleSignout(RecievedMessage * rm)
 {
-
+	cout << "test" << endl;
 }
 
 

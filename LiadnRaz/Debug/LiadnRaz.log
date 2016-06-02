@@ -1,20 +1,30 @@
-﻿Build started 6/2/2016 3:23:39 PM.
+﻿Build started 6/2/2016 4:18:22 PM.
      1>Project "C:\Users\User\Documents\GitHub\LiadnRaz\LiadnRaz\LiadnRaz.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt TriviaServer.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt Helper.cpp RecievedMessage.cpp TriviaServer.cpp User.cpp main.cpp valid.cpp
+         valid.cpp
+     1>c:\users\user\documents\github\liadnraz\liadnraz\valid.cpp(15): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\user\documents\github\liadnraz\liadnraz\valid.cpp(50): warning C4018: '<' : signed/unsigned mismatch
+         main.cpp
+         User.cpp
          TriviaServer.cpp
+         RecievedMessage.cpp
+         Helper.cpp
+         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt sqlite3.c
+         sqlite3.c
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.lib" /MACHINE:X86 Debug\DataBase.obj
-         Debug\Helper.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.lib" /MACHINE:X86 Debug\Helper.obj
          Debug\main.obj
          Debug\RecievedMessage.obj
          Debug\sqlite3.obj
          Debug\TriviaServer.obj
          Debug\User.obj
          Debug\valid.obj
+         LINK : C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.exe not found or not built by the last incremental link; performing full link
          LiadnRaz.vcxproj -> C:\Users\User\Documents\GitHub\LiadnRaz\Debug\LiadnRaz.exe
      1>Done Building Project "C:\Users\User\Documents\GitHub\LiadnRaz\LiadnRaz\LiadnRaz.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:04.18
+Time Elapsed 00:00:07.12
