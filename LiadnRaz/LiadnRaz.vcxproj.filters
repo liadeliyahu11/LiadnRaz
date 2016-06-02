@@ -22,6 +22,9 @@
     <ClCompile Include="Helper.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="DataBase.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
@@ -43,6 +46,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="valid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DataBase.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

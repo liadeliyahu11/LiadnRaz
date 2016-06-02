@@ -227,9 +227,38 @@ void TriviaServer::handleRecievedMessages()
 	
 }
 
+
+bool deleteFromUsers(map<SOCKET,User>  myMap,SOCKET s)
+{
+	bool f = false;
+	std::map<SOCKET, User>::iterator itr = myMap.begin();
+	while (itr != myMap.end() && !f) {
+		if (itr->first == s) {
+			std::map<SOCKET, User> ::iterator toErase = itr;
+			++itr;
+			myMap.erase(toErase);
+			f = true;
+		}
+		else {
+			++itr;
+		}
+	}
+	return f;
+}
+
+
 void TriviaServer::handleSignout(RecievedMessage * rm)
 {
-	cout << "test" << endl;
+	deleteFromUsers(_connectedUsers, rm->getSocket());
+	handleCloseRoom(rm);
+	handleLeaveRoom(rm);
+	handleLeaveGame(rm);
+
+}
+
+bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
+{
+	// i need to create user class 
 }
 
 
