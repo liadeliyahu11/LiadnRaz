@@ -65,7 +65,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DataBase.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RecievedMessage.cpp" />
@@ -75,7 +74,6 @@
     <ClCompile Include="valid.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DataBase.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="RecievedMessage.h" />
     <ClInclude Include="Room.h" />
