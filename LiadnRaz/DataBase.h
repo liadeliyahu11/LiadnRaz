@@ -14,7 +14,8 @@ class DataBase
 		~DataBase();
 		bool isUserExist(string username,char** azCol);
 		bool addNewUser(string username, string password, string email);
-		bool isUserAndPassMatch(string username, string password);
+		bool isUserAndPassMatch(string username, string password, char **azCol);
+		char * helper(char*,string);
 		vector<Question*> initQuestions(int questionsNo);
 		int insertNewGame();
 		bool updateGameStatus(int gameID);
@@ -22,7 +23,7 @@ class DataBase
 	private:
 		sqlite3 *db;
 		char *zErrMsg = 0;
-		
+		int rc;
 };
 /*
 
