@@ -224,7 +224,7 @@ void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 
 void TriviaServer::handleRecievedMessages()
 {
-
+	
 }
 
 void TriviaServer::handleSignout(RecievedMessage * rm)
