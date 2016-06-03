@@ -42,7 +42,7 @@ bool DataBase::isUserExist(string username,char** azCol)
 {
 	int rc;
 	char *save=new char[99];
-	strcpy(save, "select * from accounts where username=");
+	strcpy(save, "select * from t_users where username=");
 	strcat(save, username.c_str());
 	rc = sqlite3_exec(db,save,callback,0,&zErrMsg);
 	if (sizeof(azCol)!= 0)
@@ -52,5 +52,20 @@ bool DataBase::isUserExist(string username,char** azCol)
 	else
 	{
 		return false;
+	}
+}
+bool DataBase::addNewUser(string username, string password, string email)
+{
+	rc = 0;
+	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email)values(", username), password), email), ")");
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if (rc != SQLITE_OK)
+	{
+		sqlite3_free(zErrMsg);
+		return false;
+	}
+	else
+	{
+		return true;
 	}
 }
