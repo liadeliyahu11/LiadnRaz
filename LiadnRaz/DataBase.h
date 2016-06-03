@@ -15,7 +15,7 @@ class DataBase
 		bool isUserExist(string username,char** azCol);
 		bool addNewUser(string username, string password, string email);
 		bool isUserAndPassMatch(string username, string password);
-		//vector<Question*> initQuestions(int questionsNo);
+		vector<Question*> initQuestions(int questionsNo);
 		int insertNewGame();
 		bool updateGameStatus(int gameID);
 		
