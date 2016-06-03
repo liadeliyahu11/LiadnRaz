@@ -189,7 +189,7 @@ User * TriviaServer::getUserByName(string name)
 	for (std::map<SOCKET, User>::iterator it = _connectedUsers.begin(); it != _connectedUsers.end() && !found; ++it)
 	{
 		found = true;
-		if (it->second.getName().compare(name) == 0)
+		if (it->second.getUsername().compare(name) == 0)
 		{
 			res = &it->second;
 		}
@@ -213,7 +213,7 @@ void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 	try
 	{
 
-		handleSignout(new RecievedMessage(209, msg->getSocket()));//signout
+		//handleSignout(new RecievedMessage(209, msg->getSocket()));//signout
 		closesocket(msg->getSocket());
 	}
 	catch (...)
@@ -245,8 +245,7 @@ bool deleteFromUsers(map<SOCKET,User>  myMap,SOCKET s)
 	}
 	return f;
 }
-
-
+/*
 void TriviaServer::handleSignout(RecievedMessage * rm)
 {
 	deleteFromUsers(_connectedUsers, rm->getSocket());
@@ -259,6 +258,7 @@ void TriviaServer::handleSignout(RecievedMessage * rm)
 bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
 {
 	// i need to create user class 
+	return true;
 }
-
+*/
 

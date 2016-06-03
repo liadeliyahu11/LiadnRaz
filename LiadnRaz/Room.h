@@ -1,3 +1,5 @@
+#ifndef Room_Header
+#define Room_Header
 #include <iostream>
 #include <string>
 
@@ -12,3 +14,5 @@ public:
 private:
 
 };
+
+#endif
