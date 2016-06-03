@@ -69,6 +69,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Question.cpp" />
     <ClCompile Include="RecievedMessage.cpp" />
     <ClCompile Include="sqlite3.c" />
     <ClCompile Include="TriviaServer.cpp" />
@@ -79,6 +80,7 @@
     <ClInclude Include="DataBase.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="Question.h" />
     <ClInclude Include="RecievedMessage.h" />
     <ClInclude Include="Room.h" />
     <ClInclude Include="sqlite3.h" />
