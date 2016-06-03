@@ -7,7 +7,7 @@ DataBase::DataBase() throw(string)
 	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\LiadnRaz.db", &db);
 	if (rc)
 	{
-		throw("Can't Open database :",sqlite3_errmsg(db));
+		throw("Can't Open database :", sqlite3_errmsg(db));
 		sqlite3_close(db);
 		system("pause");
 	}
@@ -38,14 +38,14 @@ int callback(void* notUsed, int argc, char** argv, char** azCol)
 
 	return 0;
 }
-bool DataBase::isUserExist(string username,char** azCol)
+bool DataBase::isUserExist(string username, char** azCol)
 {
 	int rc;
-	char *save=new char[99];
+	char *save = new char[99];
 	strcpy(save, "select * from t_users where username=");
 	strcat(save, username.c_str());
-	rc = sqlite3_exec(db,save,callback,0,&zErrMsg);
-	if (sizeof(azCol)!= 0)
+	rc = sqlite3_exec(db, save, callback, 0, &zErrMsg);
+	if (sizeof(azCol) != 0)
 	{
 		return true;
 	}
@@ -53,6 +53,28 @@ bool DataBase::isUserExist(string username,char** azCol)
 	{
 		return false;
 	}
+}
+bool DataBase::isUserAndPassMatch(string username, string password, char **azCol)
+{
+	rc = 0;
+	char *sql = helper("select password from t_users where username =", username);
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	if (*azCol == password.c_str())
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+}
+char * DataBase::helper(char* command, string str)
+{
+	char *save = new char[99];
+	strcpy(save, command);
+	strcat(save, str.c_str());
+	return save;
 }
 bool DataBase::addNewUser(string username, string password, string email)
 {
