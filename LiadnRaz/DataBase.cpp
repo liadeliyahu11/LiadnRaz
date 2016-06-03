@@ -1,6 +1,7 @@
 #include "DataBase.h"
 unordered_map<string, vector<string>> results;
 pair<string, vector<string>> p;
+
 DataBase::DataBase() throw(string)
 {
 	int rc;

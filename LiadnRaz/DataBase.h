@@ -25,6 +25,24 @@ private:
 	sqlite3 *db;
 	char *zErrMsg = 0;
 
+<<<<<<< HEAD
+=======
+		DataBase() throw(string);
+		~DataBase();
+		bool isUserExist(string username,char** azCol);
+		bool addNewUser(string username, string password, string email);
+		bool isUserAndPassMatch(string username, string password, char **azCol);
+		//vector<Question*> initQuestions(int questionsNo);
+		char * helper(char*, string);
+		int insertNewGame();
+		bool updateGameStatus(int gameID);
+		
+	private:
+		int rc;
+		sqlite3 *db;
+		char *zErrMsg = 0;
+		
+>>>>>>> origin/master
 };
 /*
 
