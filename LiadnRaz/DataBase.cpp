@@ -2,7 +2,7 @@
 unordered_map<string, vector<string>> results;
 pair<string, vector<string>> p;
 
-DataBase::DataBase() throw(string)
+DataBase::DataBase()
 {
 	int rc;
 	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\LiadnRaz.db", &db);
