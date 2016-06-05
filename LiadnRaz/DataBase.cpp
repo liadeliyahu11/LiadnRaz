@@ -1,7 +1,15 @@
 #include "DataBase.h"
+#include <random>
 unordered_map<string, vector<string>> results;
 pair<string, vector<string>> p;
-
+void clearTable()
+{
+	for (auto it = results.begin(); it != results.end(); ++it)
+	{
+		it->second.clear();
+	}
+	results.clear();
+}
 DataBase::DataBase()
 {
 	int rc;
@@ -45,9 +53,11 @@ bool DataBase::isUserExist(string username, char** azCol)
 	char *save = new char[99];
 	strcpy(save, "select * from t_users where username=");
 	strcat(save, username.c_str());
+	strcat(save, ";");
 	rc = sqlite3_exec(db, save, callback, 0, &zErrMsg);
-	if (sizeof(azCol) != 0)
+	if (sizeof(results) != 0)
 	{
+		clearTable();
 		return true;
 	}
 	else
@@ -58,10 +68,11 @@ bool DataBase::isUserExist(string username, char** azCol)
 bool DataBase::isUserAndPassMatch(string username, string password, char **azCol)
 {
 	rc = 0;
-	char *sql = helper("select password from t_users where username =", username);
+	char *sql = helper("select password from t_users where username =", username + ";");
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
-	if (*azCol == password.c_str())
+	if (results[password][0] == password)
 	{
+		clearTable();
 		return true;
 	}
 	else
@@ -80,7 +91,7 @@ char * DataBase::helper(char* command, string str)
 bool DataBase::addNewUser(string username, string password, string email)
 {
 	rc = 0;
-	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email)values(", username), password), email), ")");
+	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email)values(", username), password), email), ");");
 	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
 	if (rc != SQLITE_OK)
 	{
@@ -89,6 +100,23 @@ bool DataBase::addNewUser(string username, string password, string email)
 	}
 	else
 	{
+		clearTable();
 		return true;
+	}
+}
+vector<Question*>DataBase::initQuestions(int questionNo)
+{
+	default_random_engine generator;
+	uniform_int_distribution<int> distribution(1,sizeof(results));
+	int random;
+	vector<Question*> retVec;
+	rc = 0;
+	char *sql = "select * from t_questions;";
+	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+
+	for (int i = 0; i < questionNo; i++)
+	{
+		random = distribution(generator);
+		retVec[i] = new Question();
 	}
 }

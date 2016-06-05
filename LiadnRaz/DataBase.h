@@ -1,4 +1,9 @@
 #pragma once
+<<<<<<< HEAD
+=======
+
+#include "Question.h"
+>>>>>>> origin/master
 #include "sqlite3.h"
 #include <iostream>
 #include <string>
@@ -16,7 +21,7 @@ public:
 	bool isUserExist(string username, char** azCol);
 	bool addNewUser(string username, string password, string email);
 	bool isUserAndPassMatch(string username, string password, char **azCol);
-	//vector<Question*> initQuestions(int questionsNo);
+	vector<Question*> initQuestions(int questionsNo);
 	char * helper(char*, string);
 	int insertNewGame();
 	bool updateGameStatus(int gameID);
@@ -35,4 +40,8 @@ vector<Question*> initQuestions(int questionsNo);//select number of random quest
 int insertNewGame();//return room id
 bool updateGameStatus(int gameID);//return success-true else false
 
+<<<<<<< HEAD
 */
+=======
+*/
+>>>>>>> origin/master
