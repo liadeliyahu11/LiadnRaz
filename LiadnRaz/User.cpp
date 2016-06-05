@@ -104,4 +104,6 @@ int User::closeRoom()
 		delete _currRoom;
 		_currRoom = nullptr;
 	}
+	return res;
 }
+

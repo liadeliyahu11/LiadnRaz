@@ -93,7 +93,7 @@ int Room::closeRoom(User * user)
 		{
 			if (_users[i] != _admin)
 			{
-				_users[i]->clearRoom();
+				_users[i]->leaveRoom();
 			}
 		}
 	}

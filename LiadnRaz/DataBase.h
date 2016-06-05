@@ -13,6 +13,7 @@ class DataBase
 public:
 
 	DataBase();
+	DataBase(DataBase &db);
 	~DataBase();
 	bool isUserExist(string username, char** azCol);
 	bool addNewUser(string username, string password, string email);
