@@ -73,5 +73,31 @@ bool Room::joinRoom(User * user)
 
 void Room::leaveRoom(User * user)
 {
-
+	for (unsigned int i = 0; i < _users.size();i++)
+	{
+		if (_users[i] == user)
+		{
+			_users.erase(_users.begin() + i);
+		}
+	}
+	sendMessage(getUsersListMessage());
 }
+
+int Room::closeRoom(User * user)
+{
+	int res = -1;
+	if (user == _admin)
+	{
+		res = _id;
+		for (unsigned int i = 0; i < _users.size(); i++)
+		{
+			if (_users[i] != _admin)
+			{
+				_users[i]->clearRoom();
+			}
+		}
+	}
+	return res;
+}
+
+

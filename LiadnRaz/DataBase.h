@@ -1,9 +1,5 @@
 #pragma once
-<<<<<<< HEAD
-=======
-
 #include "Question.h"
->>>>>>> origin/master
 #include "sqlite3.h"
 #include <iostream>
 #include <string>
@@ -39,9 +35,4 @@ bool isUserAndPassMatch(string username,string password);//if exist user with sa
 vector<Question*> initQuestions(int questionsNo);//select number of random questions
 int insertNewGame();//return room id
 bool updateGameStatus(int gameID);//return success-true else false
-
-<<<<<<< HEAD
 */
-=======
-*/
->>>>>>> origin/master
