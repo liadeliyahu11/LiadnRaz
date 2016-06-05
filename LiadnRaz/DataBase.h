@@ -1,5 +1,6 @@
-#ifndef DATABASE_HEADER
-#define DATABASE_HEADER
+#pragma once
+
+#include "Question.h"
 #include "sqlite3.h"
 #include <iostream>
 #include <string>
@@ -17,7 +18,7 @@ public:
 	bool isUserExist(string username, char** azCol);
 	bool addNewUser(string username, string password, string email);
 	bool isUserAndPassMatch(string username, string password, char **azCol);
-	//vector<Question*> initQuestions(int questionsNo);
+	vector<Question*> initQuestions(int questionsNo);
 	char * helper(char*, string);
 	int insertNewGame();
 	bool updateGameStatus(int gameID);
@@ -37,4 +38,3 @@ int insertNewGame();//return room id
 bool updateGameStatus(int gameID);//return success-true else false
 
 */
-#endif
