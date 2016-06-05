@@ -1,5 +1,4 @@
-#ifndef DATABASE_HEADER
-#define DATABASE_HEADER
+#pragma once
 #include "sqlite3.h"
 #include <iostream>
 #include <string>
@@ -37,4 +36,3 @@ int insertNewGame();//return room id
 bool updateGameStatus(int gameID);//return success-true else false
 
 */
-#endif

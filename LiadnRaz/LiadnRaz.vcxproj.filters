@@ -31,6 +31,9 @@
     <ClCompile Include="Question.cpp">
       <Filter>Source File</Filter>
     </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Source File</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Helper.h">
