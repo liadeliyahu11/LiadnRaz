@@ -8,6 +8,9 @@
 
 using namespace std;
 
+class User;
+class DataBase;
+
 class Game
 {
 public:

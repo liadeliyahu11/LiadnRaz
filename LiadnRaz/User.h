@@ -9,6 +9,7 @@
 using namespace std;
 
 class Room;
+class Game;
 
 class User
 {

@@ -24,9 +24,10 @@ public:
 	bool updateGameStatus(int gameID);
 
 private:
-	int rc;
-	sqlite3 *db;
-	char *zErrMsg = 0;
+	string _dbAddress;
+	int _rc;
+	sqlite3 * _db;
+	char * _zErrMsg = 0;
 };
 /*
 

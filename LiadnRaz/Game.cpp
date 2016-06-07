@@ -10,7 +10,7 @@ Game::Game(const vector<User *>& players, int questionNo, DataBase &db)
 	}
 	_questionNo = questionNo;
 	_db = new DataBase(db);
-	_db->insertNewGame();//need to check raz didnt do.
+	//_db->insertNewGame();//need to check raz didnt do.
 	_questions = _db->initQuestions(_questionNo);//check
 
 }
