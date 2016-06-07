@@ -16,6 +16,13 @@ class Game
 public:
 	Game(const vector<User *>& players,int questionNo,DataBase &db);
 	~Game();
+	void sendQuestionToAllUsers();
+	void handleFinishGame();
+	void sendFirstQuestion();
+	bool handleNextTurn();
+	bool handleAnwerFromUser(User * user,int ansNo,int time);
+	bool leaveGame(User * currUser);
+
 
 private:
 	DataBase * _db;
@@ -24,5 +31,6 @@ private:
 	vector<Question*> _questions;
 	int _currentTurnAnswers;
 	int _questionNo;
+	int _questionCount;
 
 };

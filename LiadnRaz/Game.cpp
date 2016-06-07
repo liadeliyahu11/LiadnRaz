@@ -2,6 +2,7 @@
 
 Game::Game(const vector<User *>& players, int questionNo, DataBase &db)
 {
+	_questionCount = 0;
 	for (unsigned int i = 0; i < players.size();i++)
 	{
 		_players.push_back(players[i]);
@@ -23,4 +24,62 @@ Game::~Game()
 	}
 	_questions.clear();
 	_players.clear();
+}
+
+void Game::sendQuestionToAllUsers()
+{
+	_currentTurnAnswers = 0;
+	Question * curr = _questions[_questionCount];
+	string msg = curr->getMessageToSend();
+	for (unsigned int i = 0; i < _players.size();i++)
+	{
+		try
+		{
+			_players[i]->send(msg);
+		}
+		catch (...)
+		{
+
+		}
+	}
+}
+
+bool Game::handleNextTurn()
+{
+	bool active = true;
+	if (_players.size() >0)
+	{
+		if (_currentTurnAnswers >= _players.size())//if user quit + 1 spare 
+		{
+			if (_questionCount + 1 == _questionNo)//last one
+			{
+				//handleFinishGame();
+				active = false;
+			}
+			else
+			{
+				_questionCount++;
+				sendQuestionToAllUsers();
+			}
+		}
+	}
+	else
+	{
+		active = false;
+		//handleFinishGame();
+	}
+	return active;
+}
+
+bool Game::handleAnwerFromUser(User * user,int ansNo,int time)
+{
+	bool active = true;
+	_currentTurnAnswers++;
+	int correct = _questions[_questionCount]->getCorrect();
+	if (ansNo == correct)
+	{
+		_results[user->getUsername()]++;
+		//_db->addAnswerToPlayer();
+	}
+	return active;
 }
