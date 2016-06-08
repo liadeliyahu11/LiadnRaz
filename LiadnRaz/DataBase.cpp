@@ -212,3 +212,37 @@ void DataBase::check()
 	clearTable();
 	system("pause");
 }
+bool DataBase::updateGameStatus(int gameID)
+{
+	_rc = 0;
+	bool retVal = true;
+	time_t result = time(nullptr);
+	string time = asctime(localtime(&result));
+	_rc = 0;
+	char * sql = "update t_games set status = 1 where id = ";
+	helpfunc(sql, gameID);
+	strcat(sql, ");");
+	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+	if (_rc != SQLITE_OK)
+	{
+		cout << "SQL error: " << _zErrMsg << endl;
+		sqlite3_free(_zErrMsg);
+		system("Pause");
+		retVal = false;
+	}
+	sql = "update t_games set end_time =";
+	helper(sql, time);
+	helper(sql, "where id =");
+	helpfunc(sql, gameID);
+	strcat(sql, ";");
+	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+	if (_rc != SQLITE_OK)
+	{
+		cout << "SQL error: " << _zErrMsg << endl;
+		sqlite3_free(_zErrMsg);
+		system("Pause");
+		retVal = false;
+	}
+	return retVal;
+	
+}
