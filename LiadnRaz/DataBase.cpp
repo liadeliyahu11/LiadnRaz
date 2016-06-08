@@ -244,5 +244,26 @@ bool DataBase::updateGameStatus(int gameID)
 		retVal = false;
 	}
 	return retVal;
-	
+}
+bool DataBase::addAnswerToPlayer(int gameId,string username,int questionId,string answer,bool isCorrect,int answerTime)
+{
+	_rc = 0;
+	bool retVal = true;
+	char * sql = "insert into t_players_answers(game_id,username,question_id,player_answer,is_corret,answer_time) values(";
+	helpfunc(sql, gameId);
+	helper(sql, username);
+	helpfunc(sql, questionId);
+	helper(sql, answer);
+	helpfunc(sql, isCorrect);
+	helpfunc(sql, answerTime);
+	strcat(sql, ");");
+	_rc = sqlite3_exec(_db,sql,nullptr,0,&_zErrMsg);
+	if (_rc != SQLITE_OK)
+	{
+		cout << "SQL error: " << _zErrMsg << endl;
+		sqlite3_free(_zErrMsg);
+		system("Pause");
+		retVal = false;
+	}
+	return retVal;
 }
