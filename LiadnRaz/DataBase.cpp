@@ -13,12 +13,16 @@ void clearTable()
 DataBase::DataBase()
 {
 	int rc;
-	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\LiadnRaz.db", &db);
+	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\trivia.db", &db);
 	if (rc)
 	{
 		throw("Can't Open database :", sqlite3_errmsg(db));
 		sqlite3_close(db);
 		system("pause");
+	}
+	else
+	{
+		cout << "sucess open db" << endl;
 	}
 }
 DataBase::~DataBase()
@@ -104,6 +108,16 @@ bool DataBase::addNewUser(string username, string password, string email)
 		return true;
 	}
 }
+char * helpfunc(char * str, int val)
+{
+	char* saver = new char[99];
+	_itoa(val, saver, 10);
+
+	char * result = new char[strlen(saver) + strlen(str)];
+	strcpy(result, str);
+	strcat(result, saver);
+	return result;
+}
 vector<Question*>DataBase::initQuestions(int questionNo)
 {
 	default_random_engine generator;
@@ -111,12 +125,46 @@ vector<Question*>DataBase::initQuestions(int questionNo)
 	int random;
 	vector<Question*> retVec;
 	rc = 0;
-	char *sql = "select * from t_questions;";
-	rc = sqlite3_exec(db, sql, callback, 0, &zErrMsg);
+	int id;
+	string correctAns;
+	string ans2;
+	string ans3;
+	string ans4;
 
 	for (int i = 0; i < questionNo; i++)
 	{
 		random = distribution(generator);
-		retVec[i] = new Question();
+		char *sql = "select id from t_questions where id =";
+		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		id = stoi(results.begin()->second.at(0),nullptr,10);
+		clearTable();
+		char *sql = "select correctAns from t_questions where id =";
+		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		correctAns = results.begin()->second.at(0);
+		clearTable();
+		char *sql = "select ans2 from t_questions where id =";
+		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		ans2 = results.begin()->second.at(0);
+		clearTable();
+		char *sql = "select ans3 from t_questions where id =";
+		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		ans3 = results.begin()->second.at(0);
+		clearTable();
+		char *sql = "select ans4 from t_questions where id =";
+		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		ans4 = results.begin()->second.at(0);
+		clearTable();
+		retVec[i] = new Question(id,correctAns,ans2,ans3,ans4);
 	}
+	return retVec;
+}
+
+void DataBase::check()
+{
+	rc = 0;
+	char *sql = "select id from t_questions where id = 1;";
+	rc = sqlite3_exec(db,sql, callback, 0, &zErrMsg);
+	cout << results.begin()->second.at(0).c_str() << endl;
+	clearTable();
+	system("pause");
 }

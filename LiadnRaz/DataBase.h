@@ -22,6 +22,7 @@ public:
 	char * helper(char*, string);
 	int insertNewGame();
 	bool updateGameStatus(int gameID);
+	void check();
 
 private:
 	int rc;
