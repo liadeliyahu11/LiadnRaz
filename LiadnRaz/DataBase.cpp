@@ -1,5 +1,6 @@
 #include "DataBase.h"
 #include <random>
+#include <ctime>
 unordered_map<string, vector<string>> results;
 pair<string, vector<string>> p;
 void clearTable()
@@ -12,15 +13,12 @@ void clearTable()
 }
 DataBase::DataBase()
 {
-<<<<<<< HEAD
 	int rc;
-	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\trivia.db", &db);
+	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\trivia.db", &_db);
 	if (rc)
-=======
 	_dbAddress = "C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\LiadnRaz.db";
 	_rc = sqlite3_open(_dbAddress.c_str(), &_db);
 	if (_rc)
->>>>>>> origin/master
 	{
 		throw("Can't Open database :", sqlite3_errmsg(_db));
 		sqlite3_close(_db);
@@ -142,59 +140,75 @@ vector<Question*>DataBase::initQuestions(int questionNo)
 	uniform_int_distribution<int> distribution(1,sizeof(results));
 	int random;
 	vector<Question*> retVec;
-<<<<<<< HEAD
-	rc = 0;
+	_rc = 0;
 	int id;
+	string question;
 	string correctAns;
 	string ans2;
 	string ans3;
 	string ans4;
-=======
 	_rc = 0;
 	char *sql = "select * from t_questions;";
 	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
->>>>>>> origin/master
-
 	for (int i = 0; i < questionNo; i++)
 	{
 		random = distribution(generator);
-<<<<<<< HEAD
 		char *sql = "select id from t_questions where id =";
-		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
 		id = stoi(results.begin()->second.at(0),nullptr,10);
 		clearTable();
-		char *sql = "select correctAns from t_questions where id =";
-		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		sql = "select question from t_questions where id =";
+		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
+		question = results.begin()->second.at(0);
+		clearTable();
+		sql = "select correctAns from t_questions where id =";
+		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
 		correctAns = results.begin()->second.at(0);
 		clearTable();
-		char *sql = "select ans2 from t_questions where id =";
-		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		sql = "select ans2 from t_questions where id =";
+		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
 		ans2 = results.begin()->second.at(0);
 		clearTable();
-		char *sql = "select ans3 from t_questions where id =";
-		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		sql = "select ans3 from t_questions where id =";
+		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
 		ans3 = results.begin()->second.at(0);
 		clearTable();
-		char *sql = "select ans4 from t_questions where id =";
-		rc = sqlite3_exec(db, helpfunc(sql, random), callback, 0, &zErrMsg);
+		sql = "select ans4 from t_questions where id =";
+		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
 		ans4 = results.begin()->second.at(0);
 		clearTable();
-		retVec[i] = new Question(id,correctAns,ans2,ans3,ans4);
+		retVec[i] = new Question(id,question,correctAns,ans2,ans3,ans4);
 	}
 	return retVec;
 }
-
+int DataBase::insertNewGame()
+{
+	int retid;
+	time_t result = time(nullptr);
+	string time = asctime(localtime(&result));
+	_rc = 0;
+	char * sql = "insert into t_games(status,start_game)values(0,";
+	helper(sql, time);
+	strcat(sql, ");");
+	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+	if (_rc != SQLITE_OK)
+	{
+		sqlite3_free(_zErrMsg);
+		return false;
+	}
+	sql = "select id from t_games where id = last_insert_rowid();";
+	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
+	retid = stoi(results.begin()->second.at(0),nullptr,10);
+	clearTable();
+	return retid;
+}
 void DataBase::check()
 {
-	rc = 0;
+	
+	_rc = 0;
 	char *sql = "select id from t_questions where id = 1;";
-	rc = sqlite3_exec(db,sql, callback, 0, &zErrMsg);
+	_rc = sqlite3_exec(_db,sql, callback, 0, &_zErrMsg);
 	cout << results.begin()->second.at(0).c_str() << endl;
 	clearTable();
 	system("pause");
-=======
-		//retVec[i] = new Question();
-	}
-	return retVec;
->>>>>>> origin/master
 }
