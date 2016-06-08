@@ -51,7 +51,59 @@ void User::clearGame()
 
 bool User::createRoom(int roomId, string roomName, int maxUsers, int questionsNo, int questionTime)
 {
-	//create room
-	return true;
+	bool success = true;
+	if (_currRoom)
+	{
+		send("1141");
+		success = false;
+	}
+	else
+	{
+
+		Room * rm = new Room(roomId, this, roomName, maxUsers, questionsNo, questionTime);
+		_currRoom = rm;
+		send("1140");
+	}
+	return success;
+}
+
+
+bool User::joinRoom(Room * rm)
+{
+	bool res = true;
+	if (_currRoom)
+	{
+		res = false;
+	}
+	else
+	{
+		if (rm->joinRoom(this))
+		{
+			_currRoom = rm;
+		}
+	}
+	return false;
+}
+
+
+void User::leaveRoom()
+{
+	if (_currRoom)
+	{
+		_currRoom->leaveRoom(this);
+		_currRoom = nullptr;
+	}
+}
+
+int User::closeRoom()
+{
+	int res = -1;
+	if (_currRoom)
+	{
+		_currRoom->closeRoom(this);
+		delete _currRoom;
+		_currRoom = nullptr;
+	}
+	return res;
 }
 

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Question.h"
 #include "sqlite3.h"
 #include <iostream>
@@ -14,6 +13,7 @@ class DataBase
 public:
 
 	DataBase();
+	DataBase(DataBase &db);
 	~DataBase();
 	bool isUserExist(string username, char** azCol);
 	bool addNewUser(string username, string password, string email);
@@ -25,9 +25,10 @@ public:
 	void check();
 
 private:
-	int rc;
-	sqlite3 *db;
-	char *zErrMsg = 0;
+	string _dbAddress;
+	int _rc;
+	sqlite3 * _db;
+	char * _zErrMsg = 0;
 };
 /*
 
@@ -37,5 +38,4 @@ bool isUserAndPassMatch(string username,string password);//if exist user with sa
 vector<Question*> initQuestions(int questionsNo);//select number of random questions
 int insertNewGame();//return room id
 bool updateGameStatus(int gameID);//return success-true else false
-
 */
