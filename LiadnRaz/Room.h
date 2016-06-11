@@ -18,6 +18,8 @@ public:
 	bool joinRoom(User * user);
 	void leaveRoom(User * user);
 	int closeRoom(User * );
+	vector<User*> getUsers();
+	int getquestionNo();
 
 
 	
