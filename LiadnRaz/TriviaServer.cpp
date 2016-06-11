@@ -251,7 +251,61 @@ void TriviaServer::handleSignout(RecievedMessage * rm)
 	handleLeaveGame(rm);
 
 }
-
+User * TriviaServer::handleSignin(RecievedMessage * rm)
+{
+	if (_db->isUserAndPassMatch((rm->getData()[0]), (rm->getData()[1])))
+	{
+		if (getUserByName(rm->getData()[0]))
+		{
+			cout << "this user already connected" << endl;
+		}
+		else
+		{
+			User * userN = new User(rm->getData()[0],rm->getSocket());
+			_connectedUsers[rm->getSocket()] = userN;
+			cout << "sucess to connect :)" << endl;
+			return userN;
+		}
+	}
+	return nullptr;
+}
+bool TriviaServer::handleSignup(RecievedMessage * msg)
+{
+	bool retVal = true;
+	if (Valid::isPasswordValid(msg->getData()[1]))
+	{
+		if (Valid::isUsernameValid(msg->getData()[0]))
+		{
+			if (_db->isUserExist(msg->getData()[0]))
+			{
+				cout << "the user is alredy exists" << endl;
+			}
+			else
+			{
+				if (_db->addNewUser(msg->getData()[0], msg->getData()[1], msg->getData()[2]))
+				{
+					cout << "sucess to create the user" << endl;
+				}
+				else
+				{
+					cout << "fail to create the user" << endl;
+					retVal = false;
+				}
+			}
+		}
+		else
+		{
+			cout << "the username isn't vaild" << endl;
+			retVal = false;
+		}
+	}
+	else
+	{
+		cout << "the password isn't vaild" << endl;
+		retVal = false;
+	}
+	return retVal;
+}
 bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
 {
 	map<int, Room*>::iterator it;

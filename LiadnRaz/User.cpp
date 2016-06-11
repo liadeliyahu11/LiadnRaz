@@ -105,3 +105,15 @@ int User::closeRoom()
 	}
 	return res;
 }
+
+bool User::leaveGame()
+{
+	bool f = false;
+	if (_currGame)
+	{
+		f = true;
+		_currGame->leaveGame(this);
+		_currGame = nullptr;
+	}
+	return f;
+}
