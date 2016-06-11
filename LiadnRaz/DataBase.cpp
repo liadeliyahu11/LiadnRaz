@@ -85,12 +85,12 @@ bool DataBase::isUserExist(string username, char** azCol)
 		return false;
 	}
 }
-bool DataBase::isUserAndPassMatch(string username, string password, char **azCol)
+bool DataBase::isUserAndPassMatch(string username, string password)
 {
 	_rc = 0;
 	char *sql = helper("select password from t_users where username =", username + ";");
 	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
-	if (results[password][0] == password)
+	if ((results.begin()->second.at(0).compare(password)) == 0)
 	{
 		clearTable();
 		return true;

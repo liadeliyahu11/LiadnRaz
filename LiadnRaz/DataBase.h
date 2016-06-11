@@ -17,7 +17,7 @@ public:
 	~DataBase();
 	bool isUserExist(string username, char** azCol);
 	bool addNewUser(string username, string password, string email);
-	bool isUserAndPassMatch(string username, string password, char **azCol);
+	bool isUserAndPassMatch(string username, string password);
 	bool addAnswerToPlayer(int gameiId, string username, int questionId, string answer, bool isCorrect, int answerTime);
 	vector<Question*> initQuestions(int questionsNo);
 	char * helper(char*, string);

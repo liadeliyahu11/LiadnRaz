@@ -104,3 +104,19 @@ void Game::handleFinishGame()
 		}
 	}
 }
+bool Game::leaveGame(User * currUser)
+{
+	bool retVal = false;
+	for (int i = 0; i<_players.size(); i++)
+	{
+		if (_players[i] == currUser)
+		{
+			_players.erase(_players.begin() + i);
+		}
+	}
+	if (handleNextTurn())
+	{
+		retVal = true;
+	}
+	return retVal;
+}
