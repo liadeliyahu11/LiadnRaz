@@ -16,7 +16,7 @@ DataBase::DataBase()
 	int rc;
 	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\trivia.db", &_db);
 	if (rc)
-	_dbAddress = "C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\LiadnRaz.db";
+	_dbAddress = "C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\trivia.db";
 	_rc = sqlite3_open(_dbAddress.c_str(), &_db);
 	if (_rc)
 	{
@@ -75,7 +75,7 @@ bool DataBase::isUserExist(string username, char** azCol)
 	strcat(save, username.c_str());
 	strcat(save, ";");
 	_rc = sqlite3_exec(_db, save, callback, 0, &_zErrMsg);
-	if (sizeof(results) != 0)
+	if (results.size() != 0)
 	{
 		clearTable();
 		return true;
@@ -137,7 +137,7 @@ char * helpfunc(char * str, int val)
 vector<Question*>DataBase::initQuestions(int questionNo)
 {
 	default_random_engine generator;
-	uniform_int_distribution<int> distribution(1,sizeof(results));
+	uniform_int_distribution<int> distribution(1,results.size());
 	int random;
 	vector<Question*> retVec;
 	_rc = 0;
