@@ -14,7 +14,7 @@ class DataBase;
 class Game
 {
 public:
-	Game(const vector<User *>& players,int questionNo,DataBase &db);
+	Game(vector<User *>& players,int questionNo,DataBase  * db);
 	~Game();
 	void sendQuestionToAllUsers();
 	void handleFinishGame();

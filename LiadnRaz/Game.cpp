@@ -1,6 +1,6 @@
 #include "Game.h"
 
-Game::Game(const vector<User *>& players, int questionNo, DataBase &db)
+Game::Game(vector<User *>& players, int questionNo, DataBase * db)
 {
 	_questionCount = 0;
 	for (unsigned int i = 0; i < players.size();i++)
@@ -10,7 +10,7 @@ Game::Game(const vector<User *>& players, int questionNo, DataBase &db)
 		_results[_players[i]->getUsername()] = 0;
 	}
 	_questionNo = questionNo;
-	_db = new DataBase(db);
+	_db = new DataBase(*db);
 	_id = _db->insertNewGame();//need to check raz didnt do.
 	_questions = _db->initQuestions(_questionNo);//check
 
@@ -119,4 +119,9 @@ bool Game::leaveGame(User * currUser)
 		retVal = true;
 	}
 	return retVal;
+}
+
+void Game::sendFirstQuestion()
+{
+	sendQuestionToAllUsers();
 }

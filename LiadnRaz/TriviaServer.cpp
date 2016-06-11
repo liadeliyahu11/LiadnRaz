@@ -423,3 +423,44 @@ void TriviaServer::handleLeaveGame(RecievedMessage * rm)
 		}
 	}
 }
+void TriviaServer::handleStartGame(RecievedMessage* rm)
+{
+	try
+	{
+		User * user = getUserBySocket(rm->getSocket());
+		vector<User*> a = user->getRoom()->getUsers();
+		Game * nGame = new Game(a,user->getRoom()->getquestionNo(), _db);
+		handleCloseRoom(rm);
+		nGame->sendFirstQuestion();
+	}
+	catch (...)
+	{
+		cout << "failed to create new game" << endl;
+	}
+}
+void TriviaServer::handlePlayerAnswer(RecievedMessage * rm)
+{
+	if (getUserBySocket(rm->getSocket())->getGame() != nullptr)
+	{
+		if (getUserBySocket(rm->getSocket())->getGame()->handleAnswerFromUser(getUserBySocket(rm->getSocket()), stoi(rm->getData()[0]), stoi(rm->getData()[1])) == false);
+		{
+			getUserBySocket(rm->getSocket())->getGame()->~Game();
+		}
+	}
+}
+bool TriviaServer::handleCreateRoom(RecievedMessage * rm)
+{
+	bool retVal = false;
+	User * nUser = getUserBySocket(rm->getSocket());
+	if (nUser != nullptr)
+	{
+		if (nUser->createRoom(TriviaServer::nextId, rm->getData()[0], stoi(rm->getData()[1]), stoi(rm->getData()[2]), stoi(rm->getData()[3])))
+		{
+			TriviaServer::nextId++;
+			TriviaServer::_roomIdSequence++;
+			_roomsList[TriviaServer::nextId] = nUser->getRoom();
+			retVal = true;
+		}
+	}
+	return retVal;
+}
