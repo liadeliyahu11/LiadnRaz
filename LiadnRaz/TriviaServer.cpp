@@ -2,7 +2,7 @@
 
 TriviaServer::TriviaServer()
 {
-	//run DB c'tor
+	_db = new DataBase();
 	int res;
 	struct addrinfo hints;
 	res = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -33,6 +33,7 @@ TriviaServer::TriviaServer()
 
 TriviaServer::~TriviaServer()
 {
+	delete _db;
 	_roomsList.clear();
 	_connectedUsers.clear();
 	closesocket(_server);
@@ -186,12 +187,12 @@ User * TriviaServer::getUserByName(string name)
 {
 	bool found = false;
 	User * res = nullptr;
-	for (std::map<SOCKET, User>::iterator it = _connectedUsers.begin(); it != _connectedUsers.end() && !found; ++it)
+	for (std::map<SOCKET, User*>::iterator it = _connectedUsers.begin(); it != _connectedUsers.end() && !found; ++it)
 	{
 		found = true;
-		if (it->second.getUsername().compare(name) == 0)
+		if (it->second->getUsername().compare(name) == 0)
 		{
-			res = &it->second;
+			res = it->second;
 		}
 	}
 	return res;
@@ -203,10 +204,11 @@ User * TriviaServer::getUserBySocket(SOCKET cs)
 	User * res = nullptr;
 	if (_connectedUsers.find(cs) != _connectedUsers.end())
 	{
-		res = &_connectedUsers.at(cs);
+		res = _connectedUsers.at(cs);
 	}
 	return res;
 }
+
 
 void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 {
@@ -228,37 +230,50 @@ void TriviaServer::handleRecievedMessages()
 }
 
 
-bool deleteFromUsers(map<SOCKET,User>  myMap,SOCKET s)
+bool TriviaServer::deleteFromUsers(SOCKET s)
 {
 	bool f = false;
-	std::map<SOCKET, User>::iterator itr = myMap.begin();
-	while (itr != myMap.end() && !f) {
-		if (itr->first == s) {
-			std::map<SOCKET, User> ::iterator toErase = itr;
-			++itr;
-			myMap.erase(toErase);
-			f = true;
-		}
-		else {
-			++itr;
-		}
+	map<SOCKET,User*>::iterator it;
+	it = _connectedUsers.find(s);
+	if (it != _connectedUsers.end())
+	{
+		_connectedUsers.erase(it);
+		f = true;
 	}
 	return f;
 }
-/*
+
 void TriviaServer::handleSignout(RecievedMessage * rm)
 {
-	deleteFromUsers(_connectedUsers, rm->getSocket());
+	deleteFromUsers(rm->getSocket());
 	handleCloseRoom(rm);
-	handleLeaveRoom(rm);
-	handleLeaveGame(rm);
+	//handleLeaveRoom(rm);
+	//handleLeaveGame(rm);
 
 }
 
 bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
 {
-	// i need to create user class 
-	return true;
-}
-*/
+	map<int, Room*>::iterator it;
+	bool ret = false;
+	SOCKET userSock = rm->getSocket();
+	if (_connectedUsers.find(userSock) != _connectedUsers.end())
+	{
+		User * user = _connectedUsers[userSock];
+		Room * room = user->getRoom();
+		if (room != nullptr)
+		{
+			ret = true;
+			int id = user->closeRoom();
+			if (id != -1)
+			{
+				it = _roomsList.find(id);
+				if (it != _roomsList.end())
+				{
+					_roomsList.erase(it);
+				}
+			}
+		}
 
+	}	return ret;
+}

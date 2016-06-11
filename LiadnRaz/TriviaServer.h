@@ -22,10 +22,11 @@ using namespace std;
 class TriviaServer
 {
 private:
+	DataBase * _db;
 	SOCKET _server;
 	WSADATA wsaData;
 	struct addrinfo *result = NULL;
-	map<SOCKET, User> _connectedUsers;
+	map<SOCKET, User*> _connectedUsers;
 	map<int, Room*> _roomsList;
 	queue<RecievedMessage *> _queRcvMessages;
 	static int _roomIdSequence;
@@ -61,5 +62,6 @@ public:
 	void buildRecieveMessage(SOCKET client_socket, int msgCode);
 	// aditional:
 	void addEndConnection(SOCKET cs);
+	bool deleteFromUsers(SOCKET s);
 
 };

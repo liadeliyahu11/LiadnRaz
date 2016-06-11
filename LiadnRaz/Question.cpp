@@ -22,6 +22,26 @@ Question::~Question()
 	_ans4 = nullptr;
 }
 
+
+
+string Question::getAns()
+{
+	return _correctAns;
+}
+
+string Question::getAns2()
+{
+	return _ans2;
+}
+string Question::getAns3()
+{
+	return _ans3;
+}
+string Question::getAns4()
+{
+	return _ans4;
+}
+
 string Question::getQuestion()
 {
 	return _question;

@@ -48,7 +48,6 @@ void User::clearGame()
 	_currGame = nullptr;
 }
 
-
 bool User::createRoom(int roomId, string roomName, int maxUsers, int questionsNo, int questionTime)
 {
 	bool success = true;
@@ -100,10 +99,9 @@ int User::closeRoom()
 	int res = -1;
 	if (_currRoom)
 	{
-		_currRoom->closeRoom(this);
+		res = _currRoom->closeRoom(this);
 		delete _currRoom;
 		_currRoom = nullptr;
 	}
 	return res;
 }
-
