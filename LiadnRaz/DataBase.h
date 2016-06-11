@@ -15,7 +15,7 @@ public:
 	DataBase();
 	DataBase(DataBase &db);
 	~DataBase();
-	bool isUserExist(string username, char** azCol);
+	bool isUserExist(string username);
 	bool addNewUser(string username, string password, string email);
 	bool isUserAndPassMatch(string username, string password);
 	bool addAnswerToPlayer(int gameiId, string username, int questionId, string answer, bool isCorrect, int answerTime);

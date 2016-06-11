@@ -67,7 +67,7 @@ int callback(void* notUsed, int argc, char** argv, char** azCol)
 
 	return 0;
 }
-bool DataBase::isUserExist(string username, char** azCol)
+bool DataBase::isUserExist(string username)
 {
 	int _rc;
 	char *save = new char[99];
