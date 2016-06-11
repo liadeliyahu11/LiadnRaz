@@ -247,8 +247,8 @@ void TriviaServer::handleSignout(RecievedMessage * rm)
 {
 	deleteFromUsers(rm->getSocket());
 	handleCloseRoom(rm);
-	//handleLeaveRoom(rm);
-	//handleLeaveGame(rm);
+	handleLeaveRoom(rm);
+	handleLeaveGame(rm);
 
 }
 
@@ -256,10 +256,9 @@ bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
 {
 	map<int, Room*>::iterator it;
 	bool ret = false;
-	SOCKET userSock = rm->getSocket();
-	if (_connectedUsers.find(userSock) != _connectedUsers.end())
+	User * user = getUserBySocket(rm->getSocket());
+	if (user != nullptr)
 	{
-		User * user = _connectedUsers[userSock];
 		Room * room = user->getRoom();
 		if (room != nullptr)
 		{
@@ -274,6 +273,34 @@ bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
 				}
 			}
 		}
+	}
+	return ret;
+}
 
-	}	return ret;
+bool TriviaServer::handleLeaveRoom(RecievedMessage * rm)
+{
+	bool ret = false;
+	User * user = getUserBySocket(rm->getSocket());
+	if (user != nullptr)
+	{
+		Room * room = user->getRoom();
+		if (room != nullptr)
+		{
+			ret = true;
+			user->leaveRoom();
+		}
+	}
+	return ret;
+}
+
+void TriviaServer::handleLeaveGame(RecievedMessage * rm)
+{
+	User * user = getUserBySocket(rm->getSocket());
+	if (user != nullptr)
+	{
+		if (user->leaveGame())
+		{
+			user->clearGame();
+		}
+	}
 }
