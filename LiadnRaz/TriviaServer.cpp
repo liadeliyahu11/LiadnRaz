@@ -1,5 +1,9 @@
 #include "TriviaServer.h"
 
+
+int TriviaServer::_roomIdSequence = 0;
+int TriviaServer::nextId = 1;
+
 TriviaServer::TriviaServer()
 {
 	_db = new DataBase();
@@ -28,7 +32,6 @@ TriviaServer::TriviaServer()
 		WSACleanup();
 		throw "check socket creation! : third error";
 	}
-
 }
 
 TriviaServer::~TriviaServer()
@@ -93,7 +96,6 @@ void TriviaServer::clientHandler(SOCKET client_socket)
 	while (flag)
 	{
 		int typeCode = Helper::getMessageTypeCode(client_socket);
-		
 		if (typeCode == 0 || typeCode == 299)
 		{
 			flag = false;
@@ -124,7 +126,7 @@ void TriviaServer::addEndConnection(SOCKET cs)
 void TriviaServer::addRecievedMessage(RecievedMessage * rm)
 {
 	_queRcvMessages.push(rm);
-	//cv Wake Up
+	_cv.notify_one();
 }
 
 void TriviaServer::buildRecieveMessage(SOCKET client_socket, int msgCode)
@@ -215,7 +217,7 @@ void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 	try
 	{
 
-		//handleSignout(new RecievedMessage(209, msg->getSocket()));//signout
+		handleSignout(new RecievedMessage(209, msg->getSocket()));//signout
 		closesocket(msg->getSocket());
 	}
 	catch (...)
@@ -226,6 +228,68 @@ void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 
 void TriviaServer::handleRecievedMessages()
 {
+	unique_lock<mutex> lock(que_mutex);
+	_cv.wait(lock, [&]{return ready; });
+	RecievedMessage * rm = _queRcvMessages.front();
+	_queRcvMessages.pop();
+	rm->setUser(getUserBySocket(rm->getSocket()));
+	try
+	{
+		int code = rm->getCode();
+		switch (code)
+		{
+		case 200:
+			handleSignin(rm);
+			break;
+		case 201:
+			handleSignout(rm);
+			break;
+		case 203:
+			handleSignup(rm);
+			break;
+		case 205:
+			//handleGetRooms(rm);
+			break;
+		case 207:
+			//handleGetUsersInRoom(rm);
+			break;
+		case 209:
+			//handleJoinRoom(rm);
+			break;
+		case 211:
+			handleLeaveRoom(rm);
+			break;
+		case 213:
+			//handleCreateRoom(rm);
+			break;
+		case 215:
+			handleCloseRoom(rm);
+			break;
+		case 217:
+			//handleStartGame(rm);
+			break;
+		case 219:
+			//handlePlayerAnswer(rm);
+			break;
+		case 222:
+			//handleLeaveGame(rm);
+			break;
+		case 223:
+			//handleGetBestScores(rm);
+			break;
+		case 225:
+			//handleGetPersonalStatus(rm);
+			break;
+		default:
+			//safeDeleteUser(rm);
+			break;
+		}
+	}
+	catch (...)
+	{
+		safeDeleteUser(rm);
+	}
+		lock.unlock();
 	
 }
 
@@ -251,6 +315,7 @@ void TriviaServer::handleSignout(RecievedMessage * rm)
 	handleLeaveGame(rm);
 
 }
+
 User * TriviaServer::handleSignin(RecievedMessage * rm)
 {
 	if (_db->isUserAndPassMatch((rm->getData()[0]), (rm->getData()[1])))

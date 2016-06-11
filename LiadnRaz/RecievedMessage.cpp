@@ -36,3 +36,14 @@ vector<string> RecievedMessage::getData()
 {
 	return _data;
 }
+
+User * RecievedMessage::getUser()
+{
+	return _user;
+}
+
+void RecievedMessage::setUser(User * a)
+{
+	_user = a;
+}
+

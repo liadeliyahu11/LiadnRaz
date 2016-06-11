@@ -1,6 +1,4 @@
 #include "TriviaServer.h"
-#include "DataBase.h"
-
 
 void main()
 {

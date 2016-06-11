@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <map>
@@ -7,6 +8,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <condition_variable>
 #include "RecievedMessage.h"
 #include "Helper.h"
 #include "valid.h"
@@ -20,10 +22,10 @@ using namespace std;
 
 #define PORT "8820"
 
-
 class TriviaServer
 {
 private:
+	bool ready = false;
 	DataBase * _db;
 	SOCKET _server;
 	WSADATA wsaData;
@@ -31,10 +33,13 @@ private:
 	map<SOCKET, User*> _connectedUsers;
 	map<int, Room*> _roomsList;
 	queue<RecievedMessage *> _queRcvMessages;
-	static int _roomIdSequence;
 	mutex que_mutex;
+	condition_variable _cv;
 
 public:
+	static int nextId;
+	static int _roomIdSequence;
+
 	TriviaServer();//run DB constructor
 	~TriviaServer();//delete rooms,users,sockets
 	void serv();
