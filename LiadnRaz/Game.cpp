@@ -11,7 +11,7 @@ Game::Game(const vector<User *>& players, int questionNo, DataBase &db)
 	}
 	_questionNo = questionNo;
 	_db = new DataBase(db);
-	//_db->insertNewGame();//need to check raz didnt do.
+	_id = _db->insertNewGame();//need to check raz didnt do.
 	_questions = _db->initQuestions(_questionNo);//check
 
 }
@@ -71,15 +71,36 @@ bool Game::handleNextTurn()
 	return active;
 }
 
-bool Game::handleAnwerFromUser(User * user,int ansNo,int time)
+bool Game::handleAnswerFromUser(User * user,int ansNo,int time)
 {
-	bool active = true;
+	bool active = true,isCorrect = false;
 	_currentTurnAnswers++;
 	int correct = _questions[_questionCount]->getCorrect();
 	if (ansNo == correct)
 	{
+		isCorrect = true;
 		_results[user->getUsername()]++;
-		//_db->addAnswerToPlayer();
 	}
+
+	_db->addAnswerToPlayer(_id, user->getUsername(), _questions[_questionCount]->getId(),
+		_questions[_questionCount]->getAns(), isCorrect, time);
+	handleNextTurn();
 	return active;
+}
+
+void Game::handleFinishGame()
+{
+	_db->updateGameStatus(_id);
+	for (unsigned int i = 0; i < _players.size();i++)
+	{
+		try
+		{
+			_players[i]->send("121");
+			_players[i]->setGame(nullptr);
+		}
+		catch (...)
+		{
+			//pass
+		}
+	}
 }

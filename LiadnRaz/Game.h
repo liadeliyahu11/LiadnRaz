@@ -20,11 +20,12 @@ public:
 	void handleFinishGame();
 	void sendFirstQuestion();
 	bool handleNextTurn();
-	bool handleAnwerFromUser(User * user,int ansNo,int time);
+	bool handleAnswerFromUser(User * user,int ansNo,int time);
 	bool leaveGame(User * currUser);
 
 
 private:
+	int _id;
 	DataBase * _db;
 	map<string, int> _results;
 	vector<User*> _players;

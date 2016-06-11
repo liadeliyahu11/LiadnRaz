@@ -52,3 +52,9 @@ string Question::getMessageToSend()
 	toSend += 4;
 	return toSend;
 }
+
+
+int Question::getId()
+{
+	return _id;
+}

@@ -15,6 +15,7 @@ public:
 	string getAns3();
 	string getAns4();
 	int getCorrect();
+	int getId();
 	string Question::getMessageToSend();
 
 private:
