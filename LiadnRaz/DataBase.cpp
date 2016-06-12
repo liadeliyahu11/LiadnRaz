@@ -1,8 +1,10 @@
 #include "DataBase.h"
 #include <random>
 #include <ctime>
+
 unordered_map<string, vector<string>> results;
 pair<string, vector<string>> p;
+
 void clearTable()
 {
 	for (auto it = results.begin(); it != results.end(); ++it)
@@ -13,11 +15,12 @@ void clearTable()
 }
 DataBase::DataBase()
 {
-	int rc;
-	rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\trivia.db", &_db);
-	if (rc)
-	_dbAddress = "C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\trivia.db";
-	_rc = sqlite3_open(_dbAddress.c_str(), &_db);
+	_rc = sqlite3_open("C:\\Users\\User\\Documents\\GitHub\\trivia.db", &_db);
+	if (_rc)
+	{
+		_dbAddress = "C:\\Users\\User\\Documents\\GitHub\\LiadnRaz\\trivia.db";
+		_rc = sqlite3_open(_dbAddress.c_str(), &_db);
+	}
 	if (_rc)
 	{
 		throw("Can't Open database :", sqlite3_errmsg(_db));
@@ -88,17 +91,21 @@ bool DataBase::isUserExist(string username)
 bool DataBase::isUserAndPassMatch(string username, string password)
 {
 	_rc = 0;
-	char *sql = helper("select password from t_users where username =", username + ";");
+	char *sql = helper("select password from t_users where username ='", username+"'");
 	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
-	if ((results.begin()->second.at(0).compare(password)) == 0)
+	if (results.size()>0)
 	{
-		clearTable();
-		return true;
+		if ((results.begin()->second.at(0).compare(password)) == 0)
+		{
+			clearTable();
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 
 }
 char * DataBase::helper(char* command, string str)
@@ -111,7 +118,7 @@ char * DataBase::helper(char* command, string str)
 bool DataBase::addNewUser(string username, string password, string email)
 {
 	_rc = 0;
-	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email)values(", username), password), email), ");");
+	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email)values('", username + "','"), password+"','"), email), "');");
 	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
 	if (_rc != SQLITE_OK)
 	{

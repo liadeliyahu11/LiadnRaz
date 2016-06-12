@@ -3,9 +3,13 @@
 
 int TriviaServer::_roomIdSequence = 0;
 int TriviaServer::nextId = 1;
+bool TriviaServer::ready = false;
 
 TriviaServer::TriviaServer()
 {
+	active = true;
+	thread t(&TriviaServer::handleRecievedMessages,this);
+	t.detach();
 	_db = new DataBase();
 	int res;
 	struct addrinfo hints;
@@ -84,7 +88,7 @@ void TriviaServer::tAccept()
 void TriviaServer::serv()
 {
 	bindAndListen();
-	while (true)
+	while (active)
 	{
 		tAccept();
 	}
@@ -95,24 +99,24 @@ void TriviaServer::clientHandler(SOCKET client_socket)
 	bool flag = true;
 	while (flag)
 	{
-		int typeCode = Helper::getMessageTypeCode(client_socket);
-		if (typeCode == 0 || typeCode == 299)
+		try
 		{
-			flag = false;
-			cout << typeCode << endl;
-			addEndConnection(client_socket);
-		}
-		else
-		{
-			try
+			int typeCode = Helper::getMessageTypeCode(client_socket);
+			if (typeCode != 0 && typeCode != 299)
 			{
 				buildRecieveMessage(client_socket, typeCode);
-				
 			}
-			catch (...)
+			else
 			{
+				flag = false;
+				cout << typeCode << endl;
 				addEndConnection(client_socket);
 			}
+		}
+		catch (...)
+		{
+			flag = false;
+			addEndConnection(client_socket);
 		}
 	}
 }
@@ -126,22 +130,22 @@ void TriviaServer::addEndConnection(SOCKET cs)
 void TriviaServer::addRecievedMessage(RecievedMessage * rm)
 {
 	_queRcvMessages.push(rm);
+	ready = true;
 	_cv.notify_one();
 }
 
 void TriviaServer::buildRecieveMessage(SOCKET client_socket, int msgCode)
 {
 	vector<string> data;
-	RecievedMessage * rm = new RecievedMessage(msgCode, client_socket);
 	if (msgCode == 200 || msgCode == 203 || msgCode == 207 ||
 		msgCode == 209 || msgCode == 213 || msgCode == 219)
 	{
 		if (msgCode == 200)
 		{
 			int usernameLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
-			data[0] = Helper::getStringPartFromSocket(client_socket, usernameLength);
+			data.push_back(Helper::getStringPartFromSocket(client_socket, usernameLength));
 			int passLength = atoi(Helper::getPartFromSocket(client_socket, 2, 0));
-			data[1] = Helper::getStringPartFromSocket(client_socket, passLength);
+			data.push_back(Helper::getStringPartFromSocket(client_socket, passLength));
 		}
 		else if (msgCode == 203)
 		{
@@ -169,9 +173,8 @@ void TriviaServer::buildRecieveMessage(SOCKET client_socket, int msgCode)
 			data.push_back(Helper::getStringPartFromSocket(client_socket, 1));
 			data.push_back(Helper::getStringPartFromSocket(client_socket, 2));
 		}
-		delete rm;
-		RecievedMessage * rm = new RecievedMessage(msgCode,client_socket,data);
 	}
+	RecievedMessage * rm = new RecievedMessage(msgCode, client_socket, data);
 	addRecievedMessage(rm);
 }
 
@@ -228,69 +231,81 @@ void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 
 void TriviaServer::handleRecievedMessages()
 {
-	unique_lock<mutex> lock(que_mutex);
-	_cv.wait(lock, [&]{return ready; });
-	RecievedMessage * rm = _queRcvMessages.front();
-	_queRcvMessages.pop();
-	rm->setUser(getUserBySocket(rm->getSocket()));
-	try
+	while (active)
 	{
-		int code = rm->getCode();
-		switch (code)
+		User * user;
+		unique_lock<mutex> lk(que_mutex);
+		_cv.wait(lk, [&]{return ready; });
+		RecievedMessage * rm = _queRcvMessages.front();
+		_queRcvMessages.pop();
+		rm->setUser(getUserBySocket(rm->getSocket()));
+		try
 		{
-		case 200:
-			handleSignin(rm);
-			break;
-		case 201:
-			handleSignout(rm);
-			break;
-		case 203:
-			handleSignup(rm);
-			break;
-		case 205:
-			//handleGetRooms(rm);
-			break;
-		case 207:
-			//handleGetUsersInRoom(rm);
-			break;
-		case 209:
-			//handleJoinRoom(rm);
-			break;
-		case 211:
-			handleLeaveRoom(rm);
-			break;
-		case 213:
-			//handleCreateRoom(rm);
-			break;
-		case 215:
-			handleCloseRoom(rm);
-			break;
-		case 217:
-			//handleStartGame(rm);
-			break;
-		case 219:
-			//handlePlayerAnswer(rm);
-			break;
-		case 222:
-			//handleLeaveGame(rm);
-			break;
-		case 223:
-			//handleGetBestScores(rm);
-			break;
-		case 225:
-			//handleGetPersonalStatus(rm);
-			break;
-		default:
-			//safeDeleteUser(rm);
-			break;
+			int code = rm->getCode();
+			switch (code)
+			{
+			case 200:
+				user = handleSignin(rm);
+				if (user)
+				{
+					_connectedUsers[rm->getSocket()] = user;
+				}
+				else
+				{
+					delete user;
+				}
+				break;
+			case 201:
+				handleSignout(rm);
+				break;
+			case 203:
+				handleSignup(rm);
+				break;
+			case 205:
+				//handleGetRooms(rm);
+				break;
+			case 207:
+				//handleGetUsersInRoom(rm);
+				break;
+			case 209:
+				//handleJoinRoom(rm);
+				break;
+			case 211:
+				handleLeaveRoom(rm);
+				break;
+			case 213:
+				//handleCreateRoom(rm);
+				break;
+			case 215:
+				handleCloseRoom(rm);
+				break;
+			case 217:
+				//handleStartGame(rm);
+				break;
+			case 219:
+				//handlePlayerAnswer(rm);
+				break;
+			case 222:
+				//handleLeaveGame(rm);
+				break;
+			case 223:
+				//handleGetBestScores(rm);
+				break;
+			case 225:
+				//handleGetPersonalStatus(rm);
+				break;
+			default:
+				safeDeleteUser(rm);
+				break;
+			}
 		}
+		catch (...)
+		{
+			safeDeleteUser(rm);
+		}
+		ready = false;
+		lk.unlock();
 	}
-	catch (...)
-	{
-		safeDeleteUser(rm);
-	}
-		lock.unlock();
-	
 }
 
 
@@ -323,17 +338,21 @@ User * TriviaServer::handleSignin(RecievedMessage * rm)
 		if (getUserByName(rm->getData()[0]))
 		{
 			cout << "this user already connected" << endl;
+			Helper::sendData(rm->getSocket(), "1022");
 		}
 		else
 		{
 			User * userN = new User(rm->getData()[0],rm->getSocket());
 			_connectedUsers[rm->getSocket()] = userN;
 			cout << "sucess to connect :)" << endl;
+			Helper::sendData(rm->getSocket(), "1020");
 			return userN;
 		}
 	}
+	Helper::sendData(rm->getSocket(), "1021");
 	return nullptr;
 }
+
 bool TriviaServer::handleSignup(RecievedMessage * msg)
 {
 	bool retVal = true;
@@ -440,9 +459,10 @@ void TriviaServer::handleStartGame(RecievedMessage* rm)
 }
 void TriviaServer::handlePlayerAnswer(RecievedMessage * rm)
 {
-	if (getUserBySocket(rm->getSocket())->getGame() != nullptr)
+	User * user = getUserBySocket(rm->getSocket());
+	if (user->getGame() != nullptr)
 	{
-		if (getUserBySocket(rm->getSocket())->getGame()->handleAnswerFromUser(getUserBySocket(rm->getSocket()), stoi(rm->getData()[0]), stoi(rm->getData()[1])) == false);
+		if (user->getGame()->handleAnswerFromUser(user, stoi(rm->getData()[0]), stoi(rm->getData()[1])) == false)
 		{
 			getUserBySocket(rm->getSocket())->getGame()->~Game();
 		}

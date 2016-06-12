@@ -25,7 +25,6 @@ using namespace std;
 class TriviaServer
 {
 private:
-	bool ready = false;
 	DataBase * _db;
 	SOCKET _server;
 	WSADATA wsaData;
@@ -35,11 +34,12 @@ private:
 	queue<RecievedMessage *> _queRcvMessages;
 	mutex que_mutex;
 	condition_variable _cv;
+	bool active;
 
 public:
 	static int nextId;
 	static int _roomIdSequence;
-
+	static bool ready;
 	TriviaServer();//run DB constructor
 	~TriviaServer();//delete rooms,users,sockets
 	void serv();

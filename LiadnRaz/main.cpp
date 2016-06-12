@@ -4,10 +4,8 @@ void main()
 {
 	try
 	{
-		//TriviaServer ts;
-		//ts.serv();
-		DataBase db = DataBase();
-		db.check();
+		TriviaServer ts;
+		ts.serv();
 	}
 	catch (...)
 	{
