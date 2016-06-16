@@ -262,25 +262,25 @@ void TriviaServer::handleRecievedMessages()
 				handleSignup(rm);
 				break;
 			case 205:
-				//handleGetRooms(rm);
+				handleGetRooms(rm);
 				break;
 			case 207:
-				//handleGetUsersInRoom(rm);
+				handleGetUsersInRoom(rm);
 				break;
 			case 209:
-				//handleJoinRoom(rm);
+				handleJoinRoom(rm);
 				break;
 			case 211:
 				handleLeaveRoom(rm);
 				break;
 			case 213:
-				//handleCreateRoom(rm);
+				handleCreateRoom(rm);
 				break;
 			case 215:
 				handleCloseRoom(rm);
 				break;
 			case 217:
-				//handleStartGame(rm);
+				handleStartGame(rm);
 				break;
 			case 219:
 				//handlePlayerAnswer(rm);
@@ -312,11 +312,24 @@ void TriviaServer::handleRecievedMessages()
 bool TriviaServer::deleteFromUsers(SOCKET s)
 {
 	bool f = false;
-	map<SOCKET,User*>::iterator it;
+	map<SOCKET, User*>::iterator it;
 	it = _connectedUsers.find(s);
 	if (it != _connectedUsers.end())
 	{
 		_connectedUsers.erase(it);
+		f = true;
+	}
+	return f;
+}
+
+bool TriviaServer::deleteFromRooms(Room * room)
+{
+	bool f = false;
+	map<int, Room*>::iterator it;
+	it = _roomsList.find(room->getId());
+	if (it != _roomsList.end())
+	{
+		_roomsList.erase(it);
 		f = true;
 	}
 	return f;
@@ -363,16 +376,19 @@ bool TriviaServer::handleSignup(RecievedMessage * msg)
 			if (_db->isUserExist(msg->getData()[0]))
 			{
 				cout << "the user is alredy exists" << endl;
+				Helper::sendData(msg->getSocket(),"1042");
 			}
 			else
 			{
 				if (_db->addNewUser(msg->getData()[0], msg->getData()[1], msg->getData()[2]))
 				{
 					cout << "sucess to create the user" << endl;
+					Helper::sendData(msg->getSocket(), "1040");
 				}
 				else
 				{
 					cout << "fail to create the user" << endl;
+					Helper::sendData(msg->getSocket(), "1044");
 					retVal = false;
 				}
 			}
@@ -380,16 +396,19 @@ bool TriviaServer::handleSignup(RecievedMessage * msg)
 		else
 		{
 			cout << "the username isn't vaild" << endl;
+			Helper::sendData(msg->getSocket(), "1043");
 			retVal = false;
 		}
 	}
 	else
 	{
 		cout << "the password isn't vaild" << endl;
+		Helper::sendData(msg->getSocket(), "1041");
 		retVal = false;
 	}
 	return retVal;
 }
+
 bool TriviaServer::handleCloseRoom(RecievedMessage * rm)
 {
 	map<int, Room*>::iterator it;
@@ -442,11 +461,12 @@ void TriviaServer::handleLeaveGame(RecievedMessage * rm)
 		}
 	}
 }
+
 void TriviaServer::handleStartGame(RecievedMessage* rm)
 {
+	User * user = getUserBySocket(rm->getSocket());
 	try
 	{
-		User * user = getUserBySocket(rm->getSocket());
 		vector<User*> a = user->getRoom()->getUsers();
 		Game * nGame = new Game(a,user->getRoom()->getquestionNo(), _db);
 		handleCloseRoom(rm);
@@ -454,9 +474,11 @@ void TriviaServer::handleStartGame(RecievedMessage* rm)
 	}
 	catch (...)
 	{
+		user->send("1180");
 		cout << "failed to create new game" << endl;
 	}
 }
+
 void TriviaServer::handlePlayerAnswer(RecievedMessage * rm)
 {
 	User * user = getUserBySocket(rm->getSocket());
@@ -468,6 +490,7 @@ void TriviaServer::handlePlayerAnswer(RecievedMessage * rm)
 		}
 	}
 }
+
 bool TriviaServer::handleCreateRoom(RecievedMessage * rm)
 {
 	bool retVal = false;
@@ -480,7 +503,70 @@ bool TriviaServer::handleCreateRoom(RecievedMessage * rm)
 			TriviaServer::_roomIdSequence++;
 			_roomsList[TriviaServer::nextId] = nUser->getRoom();
 			retVal = true;
+			cout << "room created!" << endl;
+		}
+		else
+		{
+			cout << "cant create room" << endl;
 		}
 	}
 	return retVal;
+}
+
+void TriviaServer::handleGetRooms(RecievedMessage * rm)
+{
+	User * user = getUserBySocket(rm->getSocket());
+	string msg = "106";
+	msg += Helper::getPaddedNumber(_roomsList.size(),4);
+	for (std::map<int, Room*>::iterator it = _roomsList.begin(); it != _roomsList.end(); ++it)
+	{
+		string roomName = it->second->getName();
+		msg += Helper::getPaddedNumber(it->first, 4);
+		msg += Helper::getPaddedNumber(roomName.size(),2);
+		msg += roomName;
+	}
+	user->send(msg);
+}
+
+void TriviaServer::handleGetUsersInRoom(RecievedMessage* rm)
+{
+	User * user = getUserBySocket(rm->getSocket());
+	if (user)
+	{
+		Room * room = getRoomById(stoi(rm->getData()[0]));
+		if (room)
+		{
+			user->send(room->getUsersListMessage());
+		}
+	}
+}
+
+bool TriviaServer::handleJoinRoom(RecievedMessage* msg)
+{
+	User * user = getUserBySocket(msg->getSocket());
+	if (user)
+	{
+		Room * room = getRoomById(stoi(msg->getData()[0]));
+		if (room)
+		{
+			if (room->joinRoom(user))
+			{
+				string toSend = "1100";
+				toSend += Helper::getPaddedNumber(room->getquestionNo(),2);
+				toSend += Helper::getPaddedNumber(room->getTime(), 2);
+				user->send(toSend);
+				return true;
+			}
+			else
+			{
+				user->send("1101");
+			}
+
+		}
+		else
+		{
+			user->send("1102");
+		}
+	}
+	return false;
 }

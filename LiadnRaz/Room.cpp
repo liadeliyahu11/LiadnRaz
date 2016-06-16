@@ -24,6 +24,20 @@ string getUsersAsString()
 	return "";
 }
 
+int Room::getId()
+{
+	return _id;
+}
+
+int Room::getTime()
+{
+	return _questionTime;
+}
+
+string Room::getName()
+{
+	return _name;
+}
 string Room::getUsersListMessage()
 {
 	string result="108";

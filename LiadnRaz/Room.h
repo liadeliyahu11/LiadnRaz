@@ -19,8 +19,10 @@ public:
 	void leaveRoom(User * user);
 	int closeRoom(User * );
 	vector<User*> getUsers();
+	string getName();
+	int getId();
 	int getquestionNo();
-
+	int getTime();
 
 	
 

@@ -70,5 +70,6 @@ public:
 	// aditional:
 	void addEndConnection(SOCKET cs);
 	bool deleteFromUsers(SOCKET s);
+	bool deleteFromRooms(Room *);
 
 };

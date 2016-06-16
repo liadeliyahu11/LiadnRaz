@@ -53,7 +53,7 @@ bool Game::handleNextTurn()
 		{
 			if (_questionCount + 1 == _questionNo)//last one
 			{
-				//handleFinishGame();
+				handleFinishGame();
 				active = false;
 			}
 			else
@@ -104,6 +104,7 @@ void Game::handleFinishGame()
 		}
 	}
 }
+
 bool Game::leaveGame(User * currUser)
 {
 	bool retVal = false;

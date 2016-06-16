@@ -74,9 +74,10 @@ bool DataBase::isUserExist(string username)
 {
 	int _rc;
 	char *save = new char[99];
-	strcpy(save, "select * from t_users where username=");
+	strcpy(save, "select * from t_users where username='");
 	strcat(save, username.c_str());
-	strcat(save, ";");
+	strcat(save, "';");
+	clearTable();
 	_rc = sqlite3_exec(_db, save, callback, 0, &_zErrMsg);
 	if (results.size() != 0)
 	{
@@ -90,6 +91,7 @@ bool DataBase::isUserExist(string username)
 }
 bool DataBase::isUserAndPassMatch(string username, string password)
 {
+	clearTable();
 	_rc = 0;
 	char *sql = helper("select password from t_users where username ='", username+"'");
 	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
@@ -118,7 +120,7 @@ char * DataBase::helper(char* command, string str)
 bool DataBase::addNewUser(string username, string password, string email)
 {
 	_rc = 0;
-	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email)values('", username + "','"), password+"','"), email), "');");
+	char *sql = helper(helper(helper(helper("insert into t_users(username,password,email) values('", username + "','"), password+"','"), email), "');");
 	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
 	if (_rc != SQLITE_OK)
 	{
