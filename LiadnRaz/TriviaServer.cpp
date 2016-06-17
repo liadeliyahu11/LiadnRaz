@@ -203,7 +203,6 @@ User * TriviaServer::getUserByName(string name)
 	return res;
 }
 
-
 User * TriviaServer::getUserBySocket(SOCKET cs)
 {
 	User * res = nullptr;
@@ -213,7 +212,6 @@ User * TriviaServer::getUserBySocket(SOCKET cs)
 	}
 	return res;
 }
-
 
 void TriviaServer::safeDeleteUser(RecievedMessage * msg)
 {
@@ -283,10 +281,10 @@ void TriviaServer::handleRecievedMessages()
 				handleStartGame(rm);
 				break;
 			case 219:
-				//handlePlayerAnswer(rm);
+				handlePlayerAnswer(rm);
 				break;
 			case 222:
-				//handleLeaveGame(rm);
+				handleLeaveGame(rm);
 				break;
 			case 223:
 				//handleGetBestScores(rm);
@@ -307,7 +305,6 @@ void TriviaServer::handleRecievedMessages()
 		lk.unlock();
 	}
 }
-
 
 bool TriviaServer::deleteFromUsers(SOCKET s)
 {
@@ -479,18 +476,6 @@ void TriviaServer::handleStartGame(RecievedMessage* rm)
 	}
 }
 
-void TriviaServer::handlePlayerAnswer(RecievedMessage * rm)
-{
-	User * user = getUserBySocket(rm->getSocket());
-	if (user->getGame() != nullptr)
-	{
-		if (user->getGame()->handleAnswerFromUser(user, stoi(rm->getData()[0]), stoi(rm->getData()[1])) == false)
-		{
-			getUserBySocket(rm->getSocket())->getGame()->~Game();
-		}
-	}
-}
-
 bool TriviaServer::handleCreateRoom(RecievedMessage * rm)
 {
 	bool retVal = false;
@@ -499,9 +484,9 @@ bool TriviaServer::handleCreateRoom(RecievedMessage * rm)
 	{
 		if (nUser->createRoom(TriviaServer::nextId, rm->getData()[0], stoi(rm->getData()[1]), stoi(rm->getData()[2]), stoi(rm->getData()[3])))
 		{
+			_roomsList[TriviaServer::nextId] = nUser->getRoom();
 			TriviaServer::nextId++;
 			TriviaServer::_roomIdSequence++;
-			_roomsList[TriviaServer::nextId] = nUser->getRoom();
 			retVal = true;
 			cout << "room created!" << endl;
 		}
@@ -543,10 +528,11 @@ void TriviaServer::handleGetUsersInRoom(RecievedMessage* rm)
 
 bool TriviaServer::handleJoinRoom(RecievedMessage* msg)
 {
+	Room * room;
 	User * user = getUserBySocket(msg->getSocket());
 	if (user)
 	{
-		Room * room = getRoomById(stoi(msg->getData()[0]));
+		room = getRoomById(stoi(msg->getData()[0]));
 		if (room)
 		{
 			if (room->joinRoom(user))
@@ -570,3 +556,17 @@ bool TriviaServer::handleJoinRoom(RecievedMessage* msg)
 	}
 	return false;
 }
+
+void TriviaServer::handlePlayerAnswer(RecievedMessage* rm)
+{
+	User * user = getUserBySocket(rm->getSocket());
+	Game * game = user->getGame();
+	if (game)
+	{
+		if (!game->handleAnswerFromUser(user, stoi(rm->getData()[0]), stoi(rm->getData()[1])))
+		{
+			user->clearGame();
+		}
+	}
+}
+

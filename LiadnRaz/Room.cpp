@@ -38,16 +38,18 @@ string Room::getName()
 {
 	return _name;
 }
+
+
 string Room::getUsersListMessage()
 {
 	string result="108";
-	char numOfUsers = (char)_users.size();
-	result += numOfUsers;
+	result += Helper::getPaddedNumber(_users.size(),1);
 	for (unsigned int i = 0; i < _users.size();i++)
 	{
 		string uname = _users[i]->getUsername();
-		string len = to_string(uname.size());
+		string len = Helper::getPaddedNumber(uname.size(),2);
 		result += len;
+		result += uname;
 	}
 	return result;
 }
@@ -75,7 +77,7 @@ bool Room::joinRoom(User * user)
 	{
 		_users.push_back(user);
 		sendMessage(getUsersListMessage());
-		user->send("1100");
+		success = true;
 	}
 	else
 	{
@@ -91,6 +93,7 @@ void Room::leaveRoom(User * user)
 	{
 		if (_users[i] == user)
 		{
+			_users[i]->send("116");
 			_users.erase(_users.begin() + i);
 		}
 	}
@@ -104,11 +107,12 @@ int Room::closeRoom(User * user)
 	{
 		res = _id;
 		for (unsigned int i = 0; i < _users.size(); i++)
-		{
+		{/*
 			if (_users[i] != _admin)
 			{
 				_users[i]->leaveRoom();
-			}
+			}*/
+			_users[i]->leaveRoom();
 		}
 	}
 	return res;

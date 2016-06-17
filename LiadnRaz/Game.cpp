@@ -80,8 +80,12 @@ bool Game::handleAnswerFromUser(User * user,int ansNo,int time)
 	{
 		isCorrect = true;
 		_results[user->getUsername()]++;
+		user->send("1201");
 	}
-
+	else
+	{
+		user->send("1200");
+	}
 	_db->addAnswerToPlayer(_id, user->getUsername(), _questions[_questionCount]->getId(),
 		_questions[_questionCount]->getAns(), isCorrect, time);
 	handleNextTurn();
