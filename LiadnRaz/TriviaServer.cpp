@@ -535,12 +535,13 @@ bool TriviaServer::handleJoinRoom(RecievedMessage* msg)
 		room = getRoomById(stoi(msg->getData()[0]));
 		if (room)
 		{
-			if (room->joinRoom(user))
+			if (user->joinRoom(room))
 			{
 				string toSend = "1100";
 				toSend += Helper::getPaddedNumber(room->getquestionNo(),2);
 				toSend += Helper::getPaddedNumber(room->getTime(), 2);
 				user->send(toSend);
+				room->sendMessage(room->getUsersListMessage());
 				return true;
 			}
 			else

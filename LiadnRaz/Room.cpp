@@ -8,7 +8,7 @@ Room::Room(int id,User * admin,string name,int maxUsers,int questionNo,int quest
 	_name = name;
 	_maxUsers = maxUsers;
 	_questionNo = questionNo;
-	_questionTime = _questionTime;
+	_questionTime = questionTime;
 	_users.push_back(admin);
 }
 
@@ -76,25 +76,36 @@ bool Room::joinRoom(User * user)
 	if (_users.size() < _maxUsers)
 	{
 		_users.push_back(user);
-		sendMessage(getUsersListMessage());
 		success = true;
 	}
 	else
 	{
 		user->send("1101");
-		//1102 in handle
 	}
 	return success;
 }
 
 void Room::leaveRoom(User * user)
 {
-	for (unsigned int i = 0; i < _users.size();i++)
+	if (user == _admin)
 	{
-		if (_users[i] == user)
+		for (unsigned int i = 0; i < _users.size(); i++)
 		{
-			_users[i]->send("116");
-			_users.erase(_users.begin() + i);
+			if (_users[i] == user)
+			{
+				_users.erase(_users.begin() + i);
+			}
+		}
+	}
+	else
+	{
+		for (unsigned int i = 0; i < _users.size(); i++)
+		{
+			if (_users[i] == user)
+			{
+				_users[i]->send("1120");
+				_users.erase(_users.begin() + i);
+			}
 		}
 	}
 	sendMessage(getUsersListMessage());
@@ -106,13 +117,11 @@ int Room::closeRoom(User * user)
 	if (user == _admin)
 	{
 		res = _id;
-		for (unsigned int i = 0; i < _users.size(); i++)
-		{/*
-			if (_users[i] != _admin)
-			{
-				_users[i]->leaveRoom();
-			}*/
-			_users[i]->leaveRoom();
+		int size = _users.size();
+		for (unsigned int i = 0; i < size; i++)
+		{
+			_users[0]->send("116"); 
+			_users[0]->leaveRoom();
 		}
 	}
 	return res;

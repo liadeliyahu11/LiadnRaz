@@ -78,10 +78,11 @@ bool User::joinRoom(Room * rm)
 	{
 		if (rm->joinRoom(this))
 		{
+			res = true;
 			_currRoom = rm;
 		}
 	}
-	return false;
+	return res;
 }
 
 
