@@ -34,7 +34,14 @@ Game * User::getGame()
 
 void User::send(string msg)
 {
-	Helper::sendData(_sock, msg);
+	try
+	{
+		Helper::sendData(_sock, msg);
+	}
+	catch (...)
+	{
+		throw "shit";
+	}
 }
 
 void User::setGame(Game * gm)

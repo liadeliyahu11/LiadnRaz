@@ -66,10 +66,10 @@ string Question::getMessageToSend()
 	toSend += _ans2;
 
 	toSend += Helper::getPaddedNumber(_ans3.size(), 3);
-	toSend += 3;
+	toSend += _ans3;
 
 	toSend += Helper::getPaddedNumber(_ans4.size(), 3);
-	toSend += 4;
+	toSend += _ans4;
 	return toSend;
 }
 

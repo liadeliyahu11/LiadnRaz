@@ -461,6 +461,7 @@ void TriviaServer::handleLeaveGame(RecievedMessage * rm)
 
 void TriviaServer::handleStartGame(RecievedMessage* rm)
 {
+
 	User * user = getUserBySocket(rm->getSocket());
 	try
 	{
@@ -471,7 +472,7 @@ void TriviaServer::handleStartGame(RecievedMessage* rm)
 	}
 	catch (...)
 	{
-		user->send("1180");
+		user->send("118000000000000000");
 		cout << "failed to create new game" << endl;
 	}
 }

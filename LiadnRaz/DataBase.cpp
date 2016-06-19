@@ -31,19 +31,27 @@ DataBase::DataBase()
 
 DataBase::DataBase(DataBase &database)
 {
-	_dbAddress = database._dbAddress;
-	_rc = sqlite3_open(_dbAddress.c_str(),&_db);
-	if (_rc)
+	try
 	{
-		throw("Can't Open database :", sqlite3_errmsg(_db));
-		sqlite3_close(_db);
-		system("pause");
+		_dbAddress = database._dbAddress;
+		_rc = sqlite3_open(_dbAddress.c_str(), &_db);
+		if (_rc)
+		{
+			throw("Can't Open database :", sqlite3_errmsg(_db));
+			sqlite3_close(_db);
+			system("pause");
+		}
+		else
+		{
+			cout << "sucess open db" << endl;
+		}
 	}
-	else
+	catch (...)
 	{
-		cout << "sucess open db" << endl;
+		throw "shit";
 	}
 }
+
 DataBase::~DataBase()
 {
 	sqlite3_close(_db);
@@ -146,83 +154,67 @@ char * helpfunc(char * str, int val)
 vector<Question*>DataBase::initQuestions(int questionNo)
 {
 	default_random_engine generator;
-	uniform_int_distribution<int> distribution(1,results.size());
+	uniform_int_distribution<int> distribution(1,questionNo);
 	int random;
 	vector<Question*> retVec;
 	_rc = 0;
-	int id;
+	int id = 0;
 	string question;
 	string correctAns;
 	string ans2;
 	string ans3;
 	string ans4;
 	_rc = 0;
-	char *sql = "select * from t_questions;";
-	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
 	for (int i = 0; i < questionNo; i++)
 	{
 		random = distribution(generator);
-		char *sql = "select id from t_questions where id =";
-		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
-		id = stoi(results.begin()->second.at(0),nullptr,10);
+		string sql = "select * from t_questions where question_id =";
+		sql += to_string(random);
+		sql += ";";
 		clearTable();
-		sql = "select question from t_questions where id =";
-		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
-		question = results.begin()->second.at(0);
+		_rc = sqlite3_exec(_db,sql.c_str() , callback, 0, &_zErrMsg);
+		id = atoi(results["ans4"][1].c_str());
+		question = results["ans4"][2];
+		correctAns = results["ans4"][3];
+		ans2 = results["ans4"][4];
+		ans3 = results["ans4"][5];
+		ans4 = results["ans4"][6];
 		clearTable();
-		sql = "select correctAns from t_questions where id =";
-		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
-		correctAns = results.begin()->second.at(0);
-		clearTable();
-		sql = "select ans2 from t_questions where id =";
-		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
-		ans2 = results.begin()->second.at(0);
-		clearTable();
-		sql = "select ans3 from t_questions where id =";
-		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
-		ans3 = results.begin()->second.at(0);
-		clearTable();
-		sql = "select ans4 from t_questions where id =";
-		_rc = sqlite3_exec(_db, helpfunc(sql, random), callback, 0, &_zErrMsg);
-		ans4 = results.begin()->second.at(0);
-		clearTable();
-		retVec[i] = new Question(id,question,correctAns,ans2,ans3,ans4);
+		retVec.push_back(new Question(id,question,correctAns,ans2,ans3,ans4));
 	}
 	return retVec;
 }
 int DataBase::insertNewGame()
 {
+	int retid = 0;
 	try
 	{
-		int retid = 0;
 		time_t result = time(nullptr);
 		string time = asctime(localtime(&result));
 		_rc = 0;
-		char * sql = "insert into t_games(status,start_game)values(0,";
-		helper(sql, time);
-		strcat(sql, ");");
-		_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+		string sql = "insert into t_games(status,start_time) values (0," + time + ");";
+		_rc = sqlite3_exec(_db, sql.c_str(), nullptr, 0, &_zErrMsg);
 		if (_rc != SQLITE_OK)
 		{
 			sqlite3_free(_zErrMsg);
 			return false;
 		}
-		sql = "select id from t_games where id = last_insert_rowid();";
-		_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
-		retid = stoi(results.begin()->second.at(0), nullptr, 10);
-		clearTable();
-		return retid;
+		sql = "select game_id from t_games where game_id = last_insert_rowid();";
+		_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
 	}
 	catch (...)
 	{
 		throw "shit";
 	}
+		retid = stoi(results.begin()->second.at(0),nullptr,10);
+		clearTable();
+		return retid;
 }
 void DataBase::check()
 {
 	
 	_rc = 0;
-	char *sql = "select id from t_questions where id = 1;";
+	char *sql = "select question_id from t_questions where question_id = 1;";
 	_rc = sqlite3_exec(_db,sql, callback, 0, &_zErrMsg);
 	cout << results.begin()->second.at(0).c_str() << endl;
 	clearTable();
@@ -235,7 +227,7 @@ bool DataBase::updateGameStatus(int gameID)
 	time_t result = time(nullptr);
 	string time = asctime(localtime(&result));
 	_rc = 0;
-	char * sql = "update t_games set status = 1 where id = ";
+	char * sql = "update t_games set status = 1 where game_id = ";
 	helpfunc(sql, gameID);
 	strcat(sql, ");");
 	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
@@ -248,7 +240,7 @@ bool DataBase::updateGameStatus(int gameID)
 	}
 	sql = "update t_games set end_time =";
 	helper(sql, time);
-	helper(sql, "where id =");
+	helper(sql, "where game_id =");
 	helpfunc(sql, gameID);
 	strcat(sql, ";");
 	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
@@ -261,19 +253,20 @@ bool DataBase::updateGameStatus(int gameID)
 	}
 	return retVal;
 }
+
 bool DataBase::addAnswerToPlayer(int gameId,string username,int questionId,string answer,bool isCorrect,int answerTime)
 {
 	_rc = 0;
 	bool retVal = true;
-	char * sql = "insert into t_players_answers(game_id,username,question_id,player_answer,is_corret,answer_time) values(";
-	helpfunc(sql, gameId);
-	helper(sql, username);
-	helpfunc(sql, questionId);
-	helper(sql, answer);
-	helpfunc(sql, isCorrect);
-	helpfunc(sql, answerTime);
-	strcat(sql, ");");
-	_rc = sqlite3_exec(_db,sql,nullptr,0,&_zErrMsg);
+	string sql = "insert into t_players_answers(game_id,username,question_id,player_answer,is_corret,answer_time) values(";
+	sql += to_string(gameId);
+	sql += username;
+	sql += to_string(questionId);
+	sql += answer;
+	sql += to_string(isCorrect);
+	sql += to_string(answerTime);
+	sql += ";";
+	_rc = sqlite3_exec(_db,sql.c_str(),nullptr,0,&_zErrMsg);
 	if (_rc != SQLITE_OK)
 	{
 		cout << "SQL error: " << _zErrMsg << endl;
