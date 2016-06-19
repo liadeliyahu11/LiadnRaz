@@ -131,6 +131,7 @@ vector<User*> Room::getUsers()
 {
 	return _users;
 }
+
 int Room::getquestionNo()
 {
 	return _questionNo;

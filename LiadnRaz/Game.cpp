@@ -2,17 +2,24 @@
 
 Game::Game(vector<User *>& players, int questionNo, DataBase * db)
 {
-	_questionCount = 0;
-	for (unsigned int i = 0; i < players.size();i++)
+	try
 	{
-		_players.push_back(players[i]);
-		_players[i]->setGame(this);
-		_results[_players[i]->getUsername()] = 0;
+		_questionCount = 0;
+		for (unsigned int i = 0; i < players.size(); i++)
+		{
+			_players.push_back(players[i]);
+			_players[i]->setGame(this);
+			_results[_players[i]->getUsername()] = 0;
+		}
+		_questionNo = questionNo;
+		_db = new DataBase(*db);
+		_id = _db->insertNewGame();//need to check raz didnt do.
+		_questions = _db->initQuestions(_questionNo);//check
 	}
-	_questionNo = questionNo;
-	_db = new DataBase(*db);
-	_id = _db->insertNewGame();//need to check raz didnt do.
-	_questions = _db->initQuestions(_questionNo);//check
+	catch (...)
+	{
+		throw "shit";
+	}
 
 }
 

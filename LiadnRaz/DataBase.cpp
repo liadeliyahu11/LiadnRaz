@@ -192,24 +192,31 @@ vector<Question*>DataBase::initQuestions(int questionNo)
 }
 int DataBase::insertNewGame()
 {
-	int retid;
-	time_t result = time(nullptr);
-	string time = asctime(localtime(&result));
-	_rc = 0;
-	char * sql = "insert into t_games(status,start_game)values(0,";
-	helper(sql, time);
-	strcat(sql, ");");
-	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
-	if (_rc != SQLITE_OK)
+	try
 	{
-		sqlite3_free(_zErrMsg);
-		return false;
+		int retid = 0;
+		time_t result = time(nullptr);
+		string time = asctime(localtime(&result));
+		_rc = 0;
+		char * sql = "insert into t_games(status,start_game)values(0,";
+		helper(sql, time);
+		strcat(sql, ");");
+		_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+		if (_rc != SQLITE_OK)
+		{
+			sqlite3_free(_zErrMsg);
+			return false;
+		}
+		sql = "select id from t_games where id = last_insert_rowid();";
+		_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
+		retid = stoi(results.begin()->second.at(0), nullptr, 10);
+		clearTable();
+		return retid;
 	}
-	sql = "select id from t_games where id = last_insert_rowid();";
-	_rc = sqlite3_exec(_db, sql, callback, 0, &_zErrMsg);
-	retid = stoi(results.begin()->second.at(0),nullptr,10);
-	clearTable();
-	return retid;
+	catch (...)
+	{
+		throw "shit";
+	}
 }
 void DataBase::check()
 {
