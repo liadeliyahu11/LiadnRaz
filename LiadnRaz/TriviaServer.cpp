@@ -290,7 +290,7 @@ void TriviaServer::handleRecievedMessages()
 				//handleGetBestScores(rm);
 				break;
 			case 225:
-				//handleGetPersonalStatus(rm);
+				handleGetPersonalStatus(rm);
 				break;
 			default:
 				safeDeleteUser(rm);
@@ -572,3 +572,8 @@ void TriviaServer::handlePlayerAnswer(RecievedMessage* rm)
 	}
 }
 
+
+void TriviaServer::handleGetPersonalStatus(RecievedMessage* rm)
+{
+	
+}

@@ -2,6 +2,8 @@
 #include <random>
 #include <ctime>
 
+#define OFFSET (i*6)
+
 unordered_map<string, vector<string>> results;
 pair<string, vector<string>> p;
 
@@ -57,6 +59,19 @@ DataBase::~DataBase()
 	sqlite3_close(_db);
 }
 
+
+bool questionIdNotExist(int id, vector<Question*> vec)
+{
+	for (unsigned int i = 0; i < vec.size(); i++)
+	{
+		if (vec[i]->getId() == id)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 int callback(void* notUsed, int argc, char** argv, char** azCol)
 {
 	int i;
@@ -78,6 +93,7 @@ int callback(void* notUsed, int argc, char** argv, char** azCol)
 
 	return 0;
 }
+
 bool DataBase::isUserExist(string username)
 {
 	int _rc;
@@ -151,10 +167,9 @@ char * helpfunc(char * str, int val)
 	strcat(result, saver);
 	return result;
 }
+
 vector<Question*>DataBase::initQuestions(int questionNo)
 {
-	default_random_engine generator;
-	uniform_int_distribution<int> distribution(1,questionNo);
 	int random;
 	vector<Question*> retVec;
 	_rc = 0;
@@ -167,21 +182,31 @@ vector<Question*>DataBase::initQuestions(int questionNo)
 	_rc = 0;
 	for (int i = 0; i < questionNo; i++)
 	{
-		random = distribution(generator);
-		string sql = "select * from t_questions where question_id =";
-		sql += to_string(random);
-		sql += ";";
-		clearTable();
-		_rc = sqlite3_exec(_db,sql.c_str() , callback, 0, &_zErrMsg);
-		id = atoi(results["ans4"][1].c_str());
-		question = results["ans4"][2];
-		correctAns = results["ans4"][3];
-		ans2 = results["ans4"][4];
-		ans3 = results["ans4"][5];
-		ans4 = results["ans4"][6];
-		clearTable();
-		retVec.push_back(new Question(id,question,correctAns,ans2,ans3,ans4));
+		std::srand(time(0));
+		random = rand() % questionNo + 1;
+		if (questionIdNotExist(random, retVec))
+		{
+			string sql = "select * from t_questions where question_id =";
+			sql += to_string(random);
+			sql += ";";
+			clearTable();
+			_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+			id = atoi(results["ans4"][2+OFFSET].c_str());
+			question = results["ans4"][3 + OFFSET];
+			correctAns = results["ans4"][4 + OFFSET];
+			ans2 = results["ans4"][5 + OFFSET];
+			ans3 = results["ans4"][6 + OFFSET];
+			ans4 = results["ans4"][7 + OFFSET];
+			clearTable();
+			retVec.push_back(new Question(id, question, correctAns, ans2, ans3, ans4));
+		}
+		else
+		{
+			i--;
+		}
+		
 	}
+		
 	return retVec;
 }
 int DataBase::insertNewGame()
@@ -192,24 +217,25 @@ int DataBase::insertNewGame()
 		time_t result = time(nullptr);
 		string time = asctime(localtime(&result));
 		_rc = 0;
-		string sql = "insert into t_games(status,start_time) values (0," + time + ");";
+		string sql = "insert into t_games(status,start_time) values (0,'" + time + "');";
 		_rc = sqlite3_exec(_db, sql.c_str(), nullptr, 0, &_zErrMsg);
 		if (_rc != SQLITE_OK)
 		{
 			sqlite3_free(_zErrMsg);
 			return false;
 		}
-		sql = "select game_id from t_games where game_id = last_insert_rowid();";
+		sql = "select last_insert_rowid();";
 		_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
 	}
 	catch (...)
 	{
 		throw "shit";
 	}
-		retid = stoi(results.begin()->second.at(0),nullptr,10);
+		retid = atoi(results.begin()->second.at(1).c_str());
 		clearTable();
 		return retid;
 }
+
 void DataBase::check()
 {
 	
@@ -227,10 +253,9 @@ bool DataBase::updateGameStatus(int gameID)
 	time_t result = time(nullptr);
 	string time = asctime(localtime(&result));
 	_rc = 0;
-	char * sql = "update t_games set status = 1 where game_id = ";
-	helpfunc(sql, gameID);
-	strcat(sql, ");");
-	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+	string sql = "update t_games set status = 1 where game_id = ";
+	sql += to_string(gameID) + ";";
+	_rc = sqlite3_exec(_db, sql.c_str(), nullptr, 0, &_zErrMsg);
 	if (_rc != SQLITE_OK)
 	{
 		cout << "SQL error: " << _zErrMsg << endl;
@@ -238,12 +263,11 @@ bool DataBase::updateGameStatus(int gameID)
 		system("Pause");
 		retVal = false;
 	}
-	sql = "update t_games set end_time =";
-	helper(sql, time);
-	helper(sql, "where game_id =");
-	helpfunc(sql, gameID);
-	strcat(sql, ";");
-	_rc = sqlite3_exec(_db, sql, nullptr, 0, &_zErrMsg);
+	sql = "update t_games set end_time ='";
+	sql += time;
+	sql += "' where game_id =";
+	sql += to_string(gameID) + ";";
+	_rc = sqlite3_exec(_db, sql.c_str(), nullptr, 0, &_zErrMsg);
 	if (_rc != SQLITE_OK)
 	{
 		cout << "SQL error: " << _zErrMsg << endl;
@@ -256,23 +280,34 @@ bool DataBase::updateGameStatus(int gameID)
 
 bool DataBase::addAnswerToPlayer(int gameId,string username,int questionId,string answer,bool isCorrect,int answerTime)
 {
-	_rc = 0;
-	bool retVal = true;
-	string sql = "insert into t_players_answers(game_id,username,question_id,player_answer,is_corret,answer_time) values(";
-	sql += to_string(gameId);
-	sql += username;
-	sql += to_string(questionId);
-	sql += answer;
-	sql += to_string(isCorrect);
-	sql += to_string(answerTime);
-	sql += ";";
-	_rc = sqlite3_exec(_db,sql.c_str(),nullptr,0,&_zErrMsg);
-	if (_rc != SQLITE_OK)
+	bool retVal = false;
+	try
 	{
-		cout << "SQL error: " << _zErrMsg << endl;
-		sqlite3_free(_zErrMsg);
-		system("Pause");
-		retVal = false;
+		_rc = 0;
+		string sql = "insert into t_players_answers(game_id,username,question_id,player_answer,is_correct,answer_time) values(";
+		sql += to_string(gameId);
+		sql += ",'" + username + "'";
+		sql += "," + to_string(questionId) + ",";
+		sql += "'" + answer + "',";
+		sql += to_string(isCorrect) + ",";
+		sql += to_string(answerTime);
+		sql += ");";
+		_rc = sqlite3_exec(_db, sql.c_str(), nullptr, 0, &_zErrMsg);
+		if (_rc != SQLITE_OK)
+		{
+			cout << "SQL error: " << _zErrMsg << endl;
+			sqlite3_free(_zErrMsg);
+			system("Pause");
+			retVal = false;
+		}
+		else
+		{
+			retVal = true;
+		}
+	}
+	catch (...)
+	{
+		throw "another shit";
 	}
 	return retVal;
 }
