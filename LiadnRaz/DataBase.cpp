@@ -168,12 +168,12 @@ char * helpfunc(char * str, int val)
 	return result;
 }
 
-vector<Question*>DataBase::initQuestions(int questionNo)
+vector<Question*>DataBase::initQuestions(int questionNo,int usersNo)
 {
 	int random;
 	vector<Question*> retVec;
 	_rc = 0;
-	int id = 0;
+	int id = 1;
 	string question;
 	string correctAns;
 	string ans2;
@@ -191,12 +191,12 @@ vector<Question*>DataBase::initQuestions(int questionNo)
 			sql += ";";
 			clearTable();
 			_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
-			id = atoi(results["ans4"][2+OFFSET].c_str());
-			question = results["ans4"][3 + OFFSET];
-			correctAns = results["ans4"][4 + OFFSET];
-			ans2 = results["ans4"][5 + OFFSET];
-			ans3 = results["ans4"][6 + OFFSET];
-			ans4 = results["ans4"][7 + OFFSET];
+			id = atoi(results["question_id"][1 + OFFSET + usersNo].c_str());
+			question = results["question"][2+ OFFSET + usersNo];
+			correctAns = results["correct_ans"][3 + OFFSET + usersNo];
+			ans2 = results["ans2"][4 + OFFSET + usersNo];
+			ans3 = results["ans3"][5 + OFFSET + usersNo];
+			ans4 = results["ans4"][6 + OFFSET + usersNo];
 			clearTable();
 			retVec.push_back(new Question(id, question, correctAns, ans2, ans3, ans4));
 		}
@@ -209,7 +209,8 @@ vector<Question*>DataBase::initQuestions(int questionNo)
 		
 	return retVec;
 }
-int DataBase::insertNewGame()
+
+int DataBase::insertNewGame(int usersNo)
 {
 	int retid = 0;
 	try
@@ -226,6 +227,7 @@ int DataBase::insertNewGame()
 		}
 		sql = "select last_insert_rowid();";
 		_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+		retid = atoi(results["last_insert_rowid()"][usersNo].c_str());
 	}
 	catch (...)
 	{
@@ -246,6 +248,7 @@ void DataBase::check()
 	clearTable();
 	system("pause");
 }
+
 bool DataBase::updateGameStatus(int gameID)
 {
 	_rc = 0;

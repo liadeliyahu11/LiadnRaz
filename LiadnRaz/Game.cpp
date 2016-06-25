@@ -13,8 +13,8 @@ Game::Game(vector<User *>& players, int questionNo, DataBase * db)
 		}
 		_questionNo = questionNo;
 		_db = db;
-		_id = _db->insertNewGame();//need to check raz didnt do.
-		_questions = _db->initQuestions(_questionNo);//check
+		_id = _db->insertNewGame(players.size());//need to check raz didnt do.
+		_questions = _db->initQuestions(_questionNo, players.size());//check
 	}
 	catch (...)
 	{

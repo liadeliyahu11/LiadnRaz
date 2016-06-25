@@ -359,7 +359,10 @@ User * TriviaServer::handleSignin(RecievedMessage * rm)
 			return userN;
 		}
 	}
-	Helper::sendData(rm->getSocket(), "1021");
+	else
+	{
+		Helper::sendData(rm->getSocket(), "1021");
+	}
 	return nullptr;
 }
 
