@@ -33,6 +33,10 @@ Game::~Game()
 	_players.clear();
 }
 
+vector<User * > Game::getUsers()
+{
+	return _players;
+}
 void Game::sendQuestionToAllUsers()
 {
 	_currentTurnAnswers = 0;

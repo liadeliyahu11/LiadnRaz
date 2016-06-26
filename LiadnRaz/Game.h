@@ -23,7 +23,7 @@ public:
 	bool handleAnswerFromUser(User * user,int ansNo,int time);
 	bool leaveGame(User * currUser);
 	string getFinishString();
-
+	vector<User * > getUsers();
 
 private:
 	int _id;

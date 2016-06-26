@@ -287,7 +287,7 @@ void TriviaServer::handleRecievedMessages()
 				handleLeaveGame(rm);
 				break;
 			case 223:
-				//handleGetBestScores(rm);
+				handleGetBestScores(rm);
 				break;
 			case 225:
 				handleGetPersonalStatus(rm);
@@ -592,4 +592,22 @@ void TriviaServer::handleGetPersonalStatus(RecievedMessage* rm)
 	msg += Helper::getPaddedNumber(stoi(status[3]), 2);
 	msg += Helper::getPaddedNumber((int)((stof(status[3]) - stoi(status[3]))*10), 2);
 	user->send(msg);
+}
+
+void TriviaServer::handleGetBestScores(RecievedMessage * rm)
+{
+	User * user = getUserBySocket(rm->getSocket());
+	string toSend = "124";
+	vector<string> scores = _db->getBestScores();
+	for (int i = 0; i < scores.size();i+=2)
+	{
+		toSend += Helper::getPaddedNumber(scores[i].size(), 2);
+		toSend += scores[i];
+		toSend += Helper::getPaddedNumber(stoi(scores[i+1]), 6);
+	}
+	for (int i = 0; i < 6 - scores.size();i++)
+	{
+		toSend += "0";
+	}
+	user->send(toSend);
 }

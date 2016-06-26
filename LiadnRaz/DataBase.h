@@ -4,8 +4,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "User.h"
 #include <unordered_map>
 using namespace std;
+
+class User;
 
 
 class DataBase
@@ -26,6 +29,7 @@ public:
 	void check();
 	int userCorrectAnswers(int gameid, string username, int qNo);
 	vector<string> getPersonalStatus(string username);
+	vector<string> getBestScores();
 private:
 	string _dbAddress;
 	int _rc;

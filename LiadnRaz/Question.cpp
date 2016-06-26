@@ -54,22 +54,69 @@ int Question::getCorrect()
 
 string Question::getMessageToSend()
 {
-	_correctNo = 1;
+	
 	string toSend = "118";
 	toSend += Helper::getPaddedNumber(_question.size(), 3);
 	toSend += _question;
+	
+	int r = rand() % 4 + 1;
+	_correctNo = r;
 
-	toSend += Helper::getPaddedNumber(_correctAns.size(), 3);
-	toSend += _correctAns;
+	switch (r)
+	{
+	case 1:
+		toSend += Helper::getPaddedNumber(_correctAns.size(), 3);
+		toSend += _correctAns;
 
-	toSend += Helper::getPaddedNumber(_ans2.size(), 3);
-	toSend += _ans2;
+		toSend += Helper::getPaddedNumber(_ans2.size(), 3);
+		toSend += _ans2;
 
-	toSend += Helper::getPaddedNumber(_ans3.size(), 3);
-	toSend += _ans3;
+		toSend += Helper::getPaddedNumber(_ans3.size(), 3);
+		toSend += _ans3;
 
-	toSend += Helper::getPaddedNumber(_ans4.size(), 3);
-	toSend += _ans4;
+		toSend += Helper::getPaddedNumber(_ans4.size(), 3);
+		toSend += _ans4;
+		break;
+	case 2:
+		toSend += Helper::getPaddedNumber(_ans2.size(), 3);
+		toSend += _ans2;
+
+		toSend += Helper::getPaddedNumber(_correctAns.size(), 3);
+		toSend += _correctAns;
+		
+		toSend += Helper::getPaddedNumber(_ans3.size(), 3);
+		toSend += _ans3;
+
+		toSend += Helper::getPaddedNumber(_ans4.size(), 3);
+		toSend += _ans4;
+		break;
+	case 3:
+		toSend += Helper::getPaddedNumber(_ans2.size(), 3);
+		toSend += _ans2;
+
+		toSend += Helper::getPaddedNumber(_ans3.size(), 3);
+		toSend += _ans3;
+
+		toSend += Helper::getPaddedNumber(_correctAns.size(), 3);
+		toSend += _correctAns;
+
+		toSend += Helper::getPaddedNumber(_ans4.size(), 3);
+		toSend += _ans4;
+		break;
+	default:
+		toSend += Helper::getPaddedNumber(_ans2.size(), 3);
+		toSend += _ans2;
+
+		toSend += Helper::getPaddedNumber(_ans3.size(), 3);
+		toSend += _ans3;
+
+		toSend += Helper::getPaddedNumber(_ans4.size(), 3);
+		toSend += _ans4;
+		
+		toSend += Helper::getPaddedNumber(_correctAns.size(), 3);
+		toSend += _correctAns;
+		break;
+	}
 	return toSend;
 }
 

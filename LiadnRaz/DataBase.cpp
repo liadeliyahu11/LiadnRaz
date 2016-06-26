@@ -311,6 +311,7 @@ bool DataBase::addAnswerToPlayer(int gameId,string username,int questionId,strin
 
 int DataBase::userCorrectAnswers(int gameid, string username,int qNo)
 {
+	clearTable();
 	string sql = "select count(*) from t_players_answers where username='" +
 		username + "' and game_id=" + to_string(gameid) + " and is_correct=1;";
 	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
@@ -345,4 +346,51 @@ vector<string> DataBase::getPersonalStatus(string username)
 	retvec.push_back(results["avg(answer_time)"][0]);
 	clearTable();
 	return retvec;
+}
+
+vector<string> DataBase::getBestScores()
+{
+	vector<string> vecUsers;
+	vector<string> bestScore;
+	vector<string> bestUsers;
+	vector<string> total;
+	string helper;
+	_rc = 0;
+	clearTable();
+	string sql = "select username from t_users";
+	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+	for (int i = 0; i < results["username"].size();i++)
+	{
+		vecUsers.push_back(results["username"][i]);
+	}
+	clearTable();
+	for (int i = 0; i < vecUsers.size(); i++)
+	{
+		sql = "select count(*) from t_players_answers where username = '" + vecUsers[i] + "' and is_correct = 1;";
+		_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+		bestScore.push_back(results["count(*)"][0]);
+		bestUsers.push_back(vecUsers[i]);
+		clearTable();
+	}
+	for (int i = 0; i < bestScore.size(); i++)
+	{
+		for (int j = 0; j < bestScore.size()-1; j++)
+		{
+			if (atoi(bestScore[j + 1].c_str())>atoi(bestScore[j].c_str()))
+			{
+				helper = bestScore[j];
+				bestScore[j] = bestScore[j + 1];
+				bestScore[j + 1] = helper;
+				helper = bestUsers[j];
+				bestUsers[j] = bestUsers[j + 1];
+				bestUsers[j + 1] = helper;
+			}
+		}
+	}
+	for (int i = 0; i < 3 && i < bestScore.size(); i++)
+	{
+		total.push_back(bestUsers[i]);
+		total.push_back(bestScore[i]);
+	}
+	return total;
 }
