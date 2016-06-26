@@ -75,7 +75,7 @@ bool questionIdNotExist(int id, vector<Question*> vec)
 int callback(void* notUsed, int argc, char** argv, char** azCol)
 {
 	int i;
-
+	p.second.clear();
 	for (i = 0; i < argc; i++)
 	{
 		auto it = results.find(azCol[i]);
@@ -168,35 +168,29 @@ char * helpfunc(char * str, int val)
 	return result;
 }
 
-vector<Question*>DataBase::initQuestions(int questionNo,int usersNo)
+vector<Question*>DataBase::initQuestions(int questionNo)
 {
-	int random;
+	std::srand(time(0));
+	int random, id = 1;
 	vector<Question*> retVec;
 	_rc = 0;
-	int id = 1;
-	string question;
-	string correctAns;
-	string ans2;
-	string ans3;
-	string ans4;
-	_rc = 0;
+	clearTable();
+	string question, correctAns, ans2, ans3, ans4;
 	for (int i = 0; i < questionNo; i++)
 	{
-		std::srand(time(0));
 		random = rand() % questionNo + 1;
 		if (questionIdNotExist(random, retVec))
 		{
 			string sql = "select * from t_questions where question_id =";
 			sql += to_string(random);
 			sql += ";";
-			clearTable();
 			_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
-			id = atoi(results["question_id"][1 + OFFSET + usersNo].c_str());
-			question = results["question"][2+ OFFSET + usersNo];
-			correctAns = results["correct_ans"][3 + OFFSET + usersNo];
-			ans2 = results["ans2"][4 + OFFSET + usersNo];
-			ans3 = results["ans3"][5 + OFFSET + usersNo];
-			ans4 = results["ans4"][6 + OFFSET + usersNo];
+			id = atoi(results["question_id"][0].c_str());
+			question = results["question"][1];
+			correctAns = results["correct_ans"][2];
+			ans2 = results["ans2"][3];
+			ans3 = results["ans3"][4];
+			ans4 = results["ans4"][5];
 			clearTable();
 			retVec.push_back(new Question(id, question, correctAns, ans2, ans3, ans4));
 		}
@@ -226,14 +220,14 @@ int DataBase::insertNewGame(int usersNo)
 			return false;
 		}
 		sql = "select last_insert_rowid();";
+		clearTable();
 		_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
-		retid = atoi(results["last_insert_rowid()"][usersNo].c_str());
+		retid = atoi(results["last_insert_rowid()"][0].c_str());
 	}
 	catch (...)
 	{
 		throw "shit";
 	}
-		retid = atoi(results.begin()->second.at(1).c_str());
 		clearTable();
 		return retid;
 }
@@ -313,4 +307,42 @@ bool DataBase::addAnswerToPlayer(int gameId,string username,int questionId,strin
 		throw "another shit";
 	}
 	return retVal;
+}
+
+int DataBase::userCorrectAnswers(int gameid, string username,int qNo)
+{
+	string sql = "select count(*) from t_players_answers where username='" +
+		username + "' and game_id=" + to_string(gameid) + " and is_correct=1;";
+	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+	if (_rc != SQLITE_OK)
+	{
+		cout << "SQL error: " << _zErrMsg << endl;
+		sqlite3_free(_zErrMsg);
+		system("Pause");
+	}
+	int correctAnswers = atoi(results["count(*)"][0].c_str());
+	return correctAnswers;
+}
+
+vector<string> DataBase::getPersonalStatus(string username)
+{
+	vector<string> retvec;
+	_rc = 0;
+	string sql = "select DISTINCT game_id from t_players_answers where username='" + username + "';";
+	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+	retvec.push_back(to_string(results["game_id"].size()));
+	clearTable();
+	sql = "select count(*) from t_players_answers where username = '" + username + "' and is_correct = 1;";
+	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+	retvec.push_back(results["count(*)"][0]);
+	clearTable();
+	sql = "select count(*) from t_players_answers where username = '" + username + "' and is_correct = 0;";
+	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+	retvec.push_back(results["count(*)"][0]);
+	clearTable();
+	sql = "select avg(answer_time) from t_players_answers where username = '" + username + "';";
+	_rc = sqlite3_exec(_db, sql.c_str(), callback, 0, &_zErrMsg);
+	retvec.push_back(results["avg(answer_time)"][0]);
+	clearTable();
+	return retvec;
 }

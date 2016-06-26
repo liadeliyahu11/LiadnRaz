@@ -14,7 +14,7 @@ Game::Game(vector<User *>& players, int questionNo, DataBase * db)
 		_questionNo = questionNo;
 		_db = db;
 		_id = _db->insertNewGame(players.size());//need to check raz didnt do.
-		_questions = _db->initQuestions(_questionNo, players.size());//check
+		_questions = _db->initQuestions(_questionNo);//check
 	}
 	catch (...)
 	{
@@ -78,6 +78,19 @@ bool Game::handleNextTurn()
 	return active;
 }
 
+string Game::getFinishString()
+{
+	string toSend="121";
+	toSend += Helper::getPaddedNumber(_players.size(),1);
+	for (unsigned int i = 0; i < _players.size();i++)
+	{
+		toSend += Helper::getPaddedNumber(_players[i]->getUsername().size(), 2);
+		toSend += _players[i]->getUsername();
+		toSend += Helper::getPaddedNumber(_db->userCorrectAnswers(_id,_players[i]->getUsername(),_questionNo),2);
+	}
+	return toSend;
+}
+
 bool Game::handleAnswerFromUser(User * user,int ansNo,int time)
 {
 	bool active = true,isCorrect = false;
@@ -102,11 +115,12 @@ bool Game::handleAnswerFromUser(User * user,int ansNo,int time)
 void Game::handleFinishGame()
 {
 	_db->updateGameStatus(_id);
+	string toSend = getFinishString();
 	for (unsigned int i = 0; i < _players.size();i++)
 	{
 		try
 		{
-			_players[i]->send("121");
+			_players[i]->send(toSend);
 			_players[i]->setGame(nullptr);
 		}
 		catch (...)

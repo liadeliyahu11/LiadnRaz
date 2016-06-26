@@ -22,6 +22,7 @@ public:
 	bool handleNextTurn();
 	bool handleAnswerFromUser(User * user,int ansNo,int time);
 	bool leaveGame(User * currUser);
+	string getFinishString();
 
 
 private:

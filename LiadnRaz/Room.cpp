@@ -120,7 +120,10 @@ int Room::closeRoom(User * user)
 		int size = _users.size();
 		for (unsigned int i = 0; i < size; i++)
 		{
-			_users[0]->send("116"); 
+			if (!user->getGame())
+			{
+				user->send("116");
+			}
 			_users[0]->leaveRoom();
 		}
 	}

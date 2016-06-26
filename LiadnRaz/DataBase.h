@@ -19,12 +19,13 @@ public:
 	bool addNewUser(string username, string password, string email);
 	bool isUserAndPassMatch(string username, string password);
 	bool addAnswerToPlayer(int gameiId, string username, int questionId, string answer, bool isCorrect, int answerTime);
-	vector<Question*> initQuestions(int questionsNo,int usersNo);
+	vector<Question*> initQuestions(int questionsNo);
 	char * helper(char*, string);
 	int insertNewGame(int usersNo);
 	bool updateGameStatus(int gameID);
 	void check();
-
+	int userCorrectAnswers(int gameid, string username, int qNo);
+	vector<string> getPersonalStatus(string username);
 private:
 	string _dbAddress;
 	int _rc;

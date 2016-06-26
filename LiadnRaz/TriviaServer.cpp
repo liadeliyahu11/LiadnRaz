@@ -470,8 +470,8 @@ void TriviaServer::handleStartGame(RecievedMessage* rm)
 	{
 		vector<User*> a = user->getRoom()->getUsers();
 		Game * nGame = new Game(a,user->getRoom()->getquestionNo(), _db);
-		handleCloseRoom(rm);
 		nGame->sendFirstQuestion();
+		handleCloseRoom(rm);
 	}
 	catch (...)
 	{
@@ -578,5 +578,13 @@ void TriviaServer::handlePlayerAnswer(RecievedMessage* rm)
 
 void TriviaServer::handleGetPersonalStatus(RecievedMessage* rm)
 {
-	
+	User * user = getUserBySocket(rm->getSocket());
+	vector<string> status= _db->getPersonalStatus(user->getUsername());
+	string msg = "126";
+	msg += Helper::getPaddedNumber(stoi(status[0]), 4);
+	msg += Helper::getPaddedNumber(stoi(status[1]), 6);
+	msg += Helper::getPaddedNumber(stoi(status[2]), 6);
+	msg += Helper::getPaddedNumber(stoi(status[3]), 2);
+	msg += Helper::getPaddedNumber((int)((stof(status[3]) - stoi(status[3]))*10), 2);
+	user->send(msg);
 }

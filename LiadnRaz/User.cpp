@@ -47,7 +47,7 @@ void User::send(string msg)
 void User::setGame(Game * gm)
 {
 	_currGame = gm;
-	_currRoom = nullptr;
+	//_currRoom = nullptr;
 }
 
 void User::clearGame()
