@@ -17,7 +17,7 @@ public:
 	void sendMessage(string msg);
 	bool joinRoom(User * user);
 	void leaveRoom(User * user);
-	int closeRoom(User * );
+	int closeRoom(User * user);
 	vector<User*> getUsers();
 	string getName();
 	int getId();

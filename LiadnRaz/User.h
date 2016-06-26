@@ -28,6 +28,7 @@ public:
 	bool joinRoom(Room *);
 	void leaveRoom();
 	int closeRoom();
+	void setRoom(Room * );
 	bool leaveGame();
 private:
 	string _username;

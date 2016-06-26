@@ -468,10 +468,15 @@ void TriviaServer::handleStartGame(RecievedMessage* rm)
 	User * user = getUserBySocket(rm->getSocket());
 	try
 	{
+		int qNo = user->getRoom()->getquestionNo();
 		vector<User*> a = user->getRoom()->getUsers();
-		Game * nGame = new Game(a,user->getRoom()->getquestionNo(), _db);
+		deleteFromRooms(user->getRoom());
+		for (int i = 0; i < a.size();i++)
+		{
+			a[i]->setRoom(nullptr);
+		}
+		Game * nGame = new Game(a,qNo, _db);
 		nGame->sendFirstQuestion();
-		handleCloseRoom(rm);
 	}
 	catch (...)
 	{

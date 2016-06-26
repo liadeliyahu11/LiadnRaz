@@ -27,6 +27,10 @@ Room * User::getRoom()
 {
 	return _currRoom;
 }
+void User::setRoom(Room * a)
+{
+	_currRoom = a;
+}
 Game * User::getGame()
 {
 	return _currGame;
